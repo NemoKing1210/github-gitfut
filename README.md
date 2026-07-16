@@ -2,11 +2,11 @@
 
 [![Install userscript](https://img.shields.io/badge/Install-userscript-238636?style=for-the-badge)](https://raw.githubusercontent.com/NemoKing1210/github-gitfut/main/github-gitfut.user.js)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.2.2-green?style=for-the-badge)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.4.0-green?style=for-the-badge)](CHANGELOG.md)
 
 A userscript for GitHub that adds [GitFut](https://gitfut.com) scouting — World Cup–style player cards rated out of 99 — while you browse profiles and hover user avatars.
 
-Open any public GitHub profile and see overall rating, position, finish tier, six football stats, playstyles, and an optional live card image. Hover an avatar anywhere on GitHub to get the same scouting snapshot in the native popover.
+Open any public GitHub profile and see overall rating, position, finish tier, six football stats, and playstyles. Hover an avatar anywhere on GitHub to get the same scouting snapshot in the native popover.
 
 Example scout report: [gitfut.com/NemoKing1210](https://gitfut.com/NemoKing1210)
 
@@ -58,9 +58,8 @@ Managers compare the installed `@version` with the remote metadata to decide whe
 
 - **Profile scout panel** — overall (OVR), position, finish tier, PAC / SHO / PAS / DRI / DEF / PHY, attributes, and playstyles in the profile sidebar
 - **Avatar hovercard** — GitFut block inside GitHub’s native popover on avatar hover
-- **Finish-tier theming** — popover tint, glow, and shine scale with Bronze → Icon / Founder
-- **Live card image** — optional PNG from `gitfut.com/{username}.png` on profile pages
-- **Settings panel** — header button + manager menu: card image, hovercard injection, cache duration, clear cache
+- **Finish-tier theming** — profile panel and popover tint, glow, and shine scale with Bronze → Icon / Founder
+- **Settings panel** — header button + manager menu: hovercard injection, cache duration, clear cache
 - **Smart caching** — responses cached locally to reduce API load
 - **Soft navigation** — works with GitHub Turbo / soft-nav profile switches
 - **10 UI languages** — English, Russian, Chinese, Spanish, Portuguese, German, French, Japanese, Korean, Polish (detected from browser locale)
@@ -111,12 +110,6 @@ Card JSON:
 GET https://gitfut.com/api/card/{username}
 ```
 
-Card image (optional):
-
-```
-https://gitfut.com/{username}.png
-```
-
 Full scout report:
 
 ```
@@ -135,7 +128,6 @@ Open **GitFut** in the GitHub header (or the userscript manager menu) to configu
 
 | Setting | Default | Notes |
 |---------|---------|--------|
-| Show card image on profiles | On | Live PNG under the scout summary |
 | Show GitFut in avatar hovercards | On | Injects into GitHub’s native user popover |
 | Cache duration (hours) | 12 | Max 168 (7 days); `0` disables |
 | Clear cache | — | Immediate; does not require Save |
@@ -214,7 +206,7 @@ Constants near the top of `github-gitfut.user.js` can be adjusted:
 
 ## Data source
 
-All scouting data comes from the public GitFut API and card image endpoints. See [Younesfdj/gitfut](https://github.com/Younesfdj/gitfut) for how ratings are derived from GitHub activity.
+All scouting data comes from the public GitFut API. See [Younesfdj/gitfut](https://github.com/Younesfdj/gitfut) for how ratings are derived from GitHub activity.
 
 This project is **not affiliated** with GitHub, Microsoft, or GitFut. Ratings are community-generated and may be incomplete or outdated. Use them as a fun reference, not as a guarantee.
 

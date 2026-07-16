@@ -10,7 +10,7 @@
 // @name:ko           GitHub GitFut
 // @name:pl           GitHub GitFut
 // @namespace         https://github.com/NemoKing1210/github-gitfut
-// @version           1.2.2
+// @version           1.4.0
 // @description       Adds GitFut scouting cards on GitHub profiles and avatar hovercards
 // @description:ru    Добавляет карточки GitFut на профили GitHub и в поповеры аватаров
 // @description:zh-CN 在 GitHub 个人资料页与头像悬停卡片中显示 GitFut 球探信息
@@ -53,7 +53,6 @@
   const CACHE_HOURS_MAX = 168;
   const DEFAULT_SETTINGS = {
     cacheHours: 12,
-    showCardImage: true,
     showHovercard: true,
   };
   const MAX_CONCURRENT = 2;
@@ -139,7 +138,7 @@
     },
   };
   const FINISH_KEYS = Object.keys(FINISH_COLORS);
-  const FINISH_CLASS_RE = /^gf-hc-finish--/;
+  const FINISH_CLASS_RE = /^gf-(?:hc|panel)-finish--/;
 
   const STAT_ORDER = [
     ['pac', 'PAC'],
@@ -177,8 +176,6 @@
       saveReload: 'Save & Reload page',
       sectionDisplay: 'Display',
       sectionCache: 'Cache',
-      showCardImage: 'Show card image on profiles',
-      showCardImageHint: 'Loads the live PNG from gitfut.com under the scout summary.',
       showHovercard: 'Show GitFut in avatar hovercards',
       showHovercardHint: 'Injects OVR, position, and stats into GitHub’s user popover on avatar hover.',
       on: 'ON',
@@ -220,8 +217,6 @@
       saveReload: 'Сохранить и перезагрузить',
       sectionDisplay: 'Отображение',
       sectionCache: 'Кэш',
-      showCardImage: 'Показывать изображение карточки',
-      showCardImageHint: 'Загружает PNG с gitfut.com под кратким отчётом.',
       showHovercard: 'GitFut в поповере аватара',
       showHovercardHint: 'Добавляет OVR, позицию и статы в нативный hovercard GitHub при наведении на аватар.',
       on: 'ВКЛ',
@@ -263,8 +258,6 @@
       saveReload: '保存并刷新',
       sectionDisplay: '显示',
       sectionCache: '缓存',
-      showCardImage: '在资料页显示卡片图',
-      showCardImageHint: '从 gitfut.com 加载实时 PNG。',
       showHovercard: '在头像悬停卡片中显示 GitFut',
       showHovercardHint: '悬停头像时在 GitHub 用户弹层中注入 OVR、位置与属性。',
       on: '开',
@@ -306,8 +299,6 @@
       saveReload: 'Guardar y recargar',
       sectionDisplay: 'Pantalla',
       sectionCache: 'Caché',
-      showCardImage: 'Mostrar imagen de carta',
-      showCardImageHint: 'Carga el PNG en vivo de gitfut.com.',
       showHovercard: 'Mostrar GitFut en hovercards de avatar',
       showHovercardHint: 'Inyecta OVR, posición y stats en el popover nativo de GitHub.',
       on: 'ON',
@@ -349,8 +340,6 @@
       saveReload: 'Salvar e recarregar',
       sectionDisplay: 'Exibição',
       sectionCache: 'Cache',
-      showCardImage: 'Mostrar imagem da carta',
-      showCardImageHint: 'Carrega o PNG ao vivo de gitfut.com.',
       showHovercard: 'Mostrar GitFut nos hovercards de avatar',
       showHovercardHint: 'Injeta OVR, posição e stats no popover nativo do GitHub.',
       on: 'ON',
@@ -392,8 +381,6 @@
       saveReload: 'Speichern & neu laden',
       sectionDisplay: 'Anzeige',
       sectionCache: 'Cache',
-      showCardImage: 'Kartenbild auf Profilen zeigen',
-      showCardImageHint: 'Lädt das Live-PNG von gitfut.com.',
       showHovercard: 'GitFut in Avatar-Hovercards zeigen',
       showHovercardHint: 'Fügt OVR, Position und Stats in GitHubs User-Popover ein.',
       on: 'AN',
@@ -435,8 +422,6 @@
       saveReload: 'Enregistrer et recharger',
       sectionDisplay: 'Affichage',
       sectionCache: 'Cache',
-      showCardImage: 'Afficher l’image de carte',
-      showCardImageHint: 'Charge le PNG live depuis gitfut.com.',
       showHovercard: 'Afficher GitFut dans les hovercards d’avatar',
       showHovercardHint: 'Injecte OVR, poste et stats dans le popover natif de GitHub.',
       on: 'ON',
@@ -478,8 +463,6 @@
       saveReload: '保存して再読込',
       sectionDisplay: '表示',
       sectionCache: 'キャッシュ',
-      showCardImage: 'カード画像を表示',
-      showCardImageHint: 'gitfut.com のライブPNGを読み込みます。',
       showHovercard: 'アバターホバーカードにGitFutを表示',
       showHovercardHint: 'アバターホバー時にGitHubのユーザーポップオーバーへOVR等を挿入。',
       on: 'ON',
@@ -521,8 +504,6 @@
       saveReload: '저장 후 새로고침',
       sectionDisplay: '표시',
       sectionCache: '캐시',
-      showCardImage: '카드 이미지 표시',
-      showCardImageHint: 'gitfut.com 라이브 PNG를 불러옵니다.',
       showHovercard: '아바타 호버카드에 GitFut 표시',
       showHovercardHint: '아바타 호버 시 GitHub 사용자 팝오버에 OVR·포지션·스탯을 넣습니다.',
       on: 'ON',
@@ -564,8 +545,6 @@
       saveReload: 'Zapisz i odśwież',
       sectionDisplay: 'Wyświetlanie',
       sectionCache: 'Cache',
-      showCardImage: 'Pokaż obraz karty',
-      showCardImageHint: 'Ładuje żywy PNG z gitfut.com.',
       showHovercard: 'Pokaż GitFut w hovercardach awatara',
       showHovercardHint: 'Wstawia OVR, pozycję i staty do natywnego popovera GitHub.',
       on: 'WŁ',
@@ -626,7 +605,6 @@
       ...DEFAULT_SETTINGS,
       ...raw,
       cacheHours: normalizeCacheHours(raw.cacheHours),
-      showCardImage: raw.showCardImage !== false,
       showHovercard:
         typeof raw.showHovercard === 'boolean'
           ? raw.showHovercard
@@ -639,8 +617,6 @@
       ...settings,
       ...next,
       cacheHours: normalizeCacheHours(next.cacheHours ?? settings.cacheHours),
-      showCardImage:
-        typeof next.showCardImage === 'boolean' ? next.showCardImage : settings.showCardImage !== false,
       showHovercard:
         typeof next.showHovercard === 'boolean'
           ? next.showHovercard
@@ -840,49 +816,248 @@
 
   GM_addStyle(`
     :root {
-      --gf-radius: 10px;
+      --gf-radius: 16px;
       --gf-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
       --gf-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
     }
 
     #${PANEL_ID} {
+      position: relative;
+      isolation: isolate;
       font-family: var(--gf-font);
       margin: 0 0 16px;
-      border: 1px solid var(--borderColor-default, var(--color-border-default, #d0d7de));
+      border: 1px solid color-mix(
+        in srgb,
+        var(--gf-finish-accent, #CD7F32) 48%,
+        var(--borderColor-default, var(--color-border-default, #d0d7de))
+      );
       border-radius: var(--gf-radius);
       background:
-        linear-gradient(160deg, var(--gf-finish-soft, transparent), transparent 55%),
-        var(--bgColor-muted, var(--color-canvas-subtle, #f6f8fa));
+        radial-gradient(
+          120% 80% at 0% 0%,
+          var(--gf-finish-soft, rgba(205,127,50,0.16)),
+          transparent 55%
+        ),
+        radial-gradient(
+          90% 70% at 100% 100%,
+          color-mix(in srgb, var(--gf-finish-glow, rgba(205,127,50,0.28)) 32%, transparent),
+          transparent 60%
+        ),
+        var(--bgColor-default, var(--color-canvas-default, #fff));
       overflow: hidden;
-      box-shadow: 0 1px 0 rgba(27,31,36,0.04);
+      box-shadow:
+        var(--gf-panel-outer-glow, 0 0 0 transparent),
+        var(--gf-panel-ring, 0 0 0 1px transparent),
+        0 8px 24px rgba(1, 4, 9, 0.1);
+      transition: box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+    }
+
+    #${PANEL_ID} > .gf-panel-theme-fx {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    #${PANEL_ID} > .gf-panel-theme-fx + * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .gf-panel-theme-fx__shine {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        115deg,
+        transparent 35%,
+        var(--gf-finish-shine, rgba(255,255,255,0.35)) 48%,
+        transparent 62%
+      );
+      background-size: 220% 100%;
+      background-position: 120% 0;
+      opacity: 0;
+    }
+
+    #${PANEL_ID}.gf-panel-finish--bronze {
+      --gf-hc-shine-opacity: 0;
+      --gf-panel-ring: inset 0 0 0 1px color-mix(in srgb, var(--gf-finish-accent) 24%, transparent);
+      --gf-panel-outer-glow: 0 0 0 transparent;
+    }
+
+    #${PANEL_ID}.gf-panel-finish--silver {
+      --gf-hc-shine-opacity: 0.16;
+      --gf-panel-ring: inset 0 0 0 1px color-mix(in srgb, var(--gf-finish-accent) 36%, transparent);
+      --gf-panel-outer-glow: 0 0 18px color-mix(in srgb, var(--gf-finish-glow) 40%, transparent);
+    }
+
+    #${PANEL_ID}.gf-panel-finish--gold {
+      --gf-hc-shine-opacity: 0.3;
+      --gf-panel-ring: inset 0 0 0 1px color-mix(in srgb, var(--gf-finish-accent) 50%, transparent);
+      --gf-panel-outer-glow:
+        0 0 22px color-mix(in srgb, var(--gf-finish-glow) 65%, transparent),
+        0 0 40px color-mix(in srgb, var(--gf-finish-glow) 24%, transparent);
+    }
+
+    #${PANEL_ID}.gf-panel-finish--totw {
+      --gf-hc-shine-opacity: 0.26;
+      --gf-panel-ring: inset 0 0 0 1px color-mix(in srgb, var(--gf-finish-accent) 55%, transparent);
+      --gf-panel-outer-glow:
+        0 0 24px color-mix(in srgb, var(--gf-finish-glow) 70%, transparent),
+        0 0 48px color-mix(in srgb, var(--gf-finish-glow) 28%, transparent);
+    }
+
+    #${PANEL_ID}.gf-panel-finish--toty {
+      --gf-hc-shine-opacity: 0.36;
+      --gf-panel-ring: inset 0 0 0 1px color-mix(in srgb, var(--gf-finish-accent) 60%, transparent);
+      --gf-panel-outer-glow:
+        0 0 28px color-mix(in srgb, var(--gf-finish-glow) 75%, transparent),
+        0 0 56px color-mix(in srgb, var(--gf-finish-glow) 32%, transparent);
+    }
+
+    #${PANEL_ID}.gf-panel-finish--icon,
+    #${PANEL_ID}.gf-panel-finish--founder {
+      --gf-hc-shine-opacity: 0.42;
+      --gf-panel-ring:
+        inset 0 0 0 1px color-mix(in srgb, var(--gf-finish-accent) 68%, transparent),
+        inset 0 0 28px color-mix(in srgb, var(--gf-finish-soft) 50%, transparent);
+      --gf-panel-outer-glow:
+        0 0 30px color-mix(in srgb, var(--gf-finish-glow) 80%, transparent),
+        0 0 60px color-mix(in srgb, var(--gf-finish-glow) 36%, transparent);
+    }
+
+    #${PANEL_ID}.gf-panel-finish--gold .gf-panel-theme-fx__shine,
+    #${PANEL_ID}.gf-panel-finish--totw .gf-panel-theme-fx__shine,
+    #${PANEL_ID}.gf-panel-finish--toty .gf-panel-theme-fx__shine,
+    #${PANEL_ID}.gf-panel-finish--icon .gf-panel-theme-fx__shine,
+    #${PANEL_ID}.gf-panel-finish--founder .gf-panel-theme-fx__shine {
+      animation: gf-hc-shine-sweep 1.8s ease-in-out 1 forwards;
+    }
+
+    #${PANEL_ID}.gf-panel-finish--totw {
+      animation: gf-panel-pulse-totw 2.4s ease-in-out infinite;
+    }
+
+    #${PANEL_ID}.gf-panel-finish--icon {
+      animation: gf-panel-pulse-icon 2.8s ease-in-out infinite;
+    }
+
+    #${PANEL_ID}.gf-panel-finish--founder {
+      animation: gf-panel-pulse-founder 2.2s ease-in-out infinite;
+    }
+
+    @keyframes gf-panel-pulse-totw {
+      0%, 100% {
+        box-shadow:
+          0 0 20px color-mix(in srgb, var(--gf-finish-glow) 50%, transparent),
+          0 0 36px color-mix(in srgb, var(--gf-finish-glow) 20%, transparent),
+          inset 0 0 0 1px color-mix(in srgb, var(--gf-finish-accent) 50%, transparent),
+          0 8px 24px rgba(1, 4, 9, 0.1);
+      }
+      50% {
+        box-shadow:
+          0 0 32px color-mix(in srgb, var(--gf-finish-glow) 80%, transparent),
+          0 0 56px color-mix(in srgb, var(--gf-finish-glow) 36%, transparent),
+          inset 0 0 0 1px color-mix(in srgb, var(--gf-finish-accent) 72%, transparent),
+          0 10px 28px rgba(1, 4, 9, 0.14);
+      }
+    }
+
+    @keyframes gf-panel-pulse-icon {
+      0%, 100% {
+        box-shadow:
+          0 0 26px color-mix(in srgb, var(--gf-finish-glow) 55%, transparent),
+          0 0 46px color-mix(in srgb, var(--gf-finish-accent) 24%, transparent),
+          inset 0 0 22px color-mix(in srgb, var(--gf-finish-soft) 38%, transparent),
+          0 8px 24px rgba(1, 4, 9, 0.12);
+      }
+      50% {
+        box-shadow:
+          0 0 40px color-mix(in srgb, var(--gf-finish-glow) 88%, transparent),
+          0 0 68px color-mix(in srgb, var(--gf-finish-accent) 42%, transparent),
+          inset 0 0 34px color-mix(in srgb, var(--gf-finish-soft) 52%, transparent),
+          0 12px 30px rgba(1, 4, 9, 0.16);
+      }
+    }
+
+    @keyframes gf-panel-pulse-founder {
+      0%, 100% {
+        box-shadow:
+          0 0 28px color-mix(in srgb, var(--gf-finish-glow) 60%, transparent),
+          0 0 50px color-mix(in srgb, var(--gf-finish-accent) 26%, transparent),
+          inset 0 0 24px color-mix(in srgb, var(--gf-finish-soft) 42%, transparent),
+          0 8px 24px rgba(1, 4, 9, 0.12);
+      }
+      50% {
+        box-shadow:
+          0 0 44px color-mix(in srgb, var(--gf-finish-glow) 92%, transparent),
+          0 0 74px color-mix(in srgb, var(--gf-finish-accent) 46%, transparent),
+          inset 0 0 38px color-mix(in srgb, var(--gf-finish-soft) 58%, transparent),
+          0 12px 32px rgba(1, 4, 9, 0.18);
+      }
+    }
+
+    .gf-panel__inner {
+      position: relative;
+      z-index: 1;
     }
 
     .gf-panel__head {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 12px 12px 10px;
-      border-bottom: 1px solid var(--borderColor-muted, rgba(27,31,36,0.08));
+      gap: 12px;
+      padding: 14px 14px 12px;
+      border-bottom: 1px solid color-mix(in srgb, var(--gf-finish-accent, #CD7F32) 22%, transparent);
+      background: linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--gf-finish-soft, rgba(205,127,50,0.16)) 55%, transparent),
+        transparent
+      );
     }
 
     .gf-panel__ovr {
       flex: 0 0 auto;
-      min-width: 52px;
-      padding: 8px 10px;
-      border-radius: 8px;
-      background: var(--gf-finish-accent, #CD7F32);
+      min-width: 56px;
+      padding: 9px 11px;
+      border-radius: 12px;
+      background:
+        linear-gradient(
+          145deg,
+          var(--gf-finish-shine, rgba(255,255,255,0.35)),
+          var(--gf-finish-accent, #CD7F32) 40%,
+          var(--gf-finish-deep, #5a3412)
+        );
       color: var(--gf-finish-ink, #2A1A0C);
       text-align: center;
       line-height: 1.05;
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, var(--gf-finish-shine) 55%, transparent),
+        0 0 0 1px color-mix(in srgb, var(--gf-finish-deep) 35%, transparent),
+        var(--gf-panel-ovr-glow, none);
+    }
+
+    #${PANEL_ID}.gf-panel-finish--silver .gf-panel__ovr,
+    #${PANEL_ID}.gf-panel-finish--gold .gf-panel__ovr {
+      --gf-panel-ovr-glow: 0 0 14px color-mix(in srgb, var(--gf-finish-glow) 55%, transparent);
+    }
+
+    #${PANEL_ID}.gf-panel-finish--totw .gf-panel__ovr,
+    #${PANEL_ID}.gf-panel-finish--toty .gf-panel__ovr,
+    #${PANEL_ID}.gf-panel-finish--icon .gf-panel__ovr,
+    #${PANEL_ID}.gf-panel-finish--founder .gf-panel__ovr {
+      --gf-panel-ovr-glow:
+        0 0 18px color-mix(in srgb, var(--gf-finish-glow) 75%, transparent),
+        0 0 30px color-mix(in srgb, var(--gf-finish-glow) 35%, transparent);
     }
 
     .gf-panel__ovr-value {
       display: block;
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 800;
       letter-spacing: -0.03em;
       font-variant-numeric: tabular-nums;
+      text-shadow: 0 1px 0 color-mix(in srgb, var(--gf-finish-shine) 40%, transparent);
     }
 
     .gf-panel__ovr-label {
@@ -902,12 +1077,12 @@
     .gf-panel__title-row {
       display: flex;
       flex-wrap: wrap;
-      align-items: baseline;
+      align-items: center;
       gap: 6px 8px;
     }
 
     .gf-panel__name {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 700;
       color: var(--fgColor-default, var(--color-fg-default, #1f2328));
       overflow: hidden;
@@ -919,41 +1094,60 @@
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      padding: 2px 7px;
+      padding: 2px 8px;
       border-radius: 999px;
       font-size: 11px;
       font-weight: 700;
       letter-spacing: 0.02em;
-      border: 1px solid color-mix(in srgb, var(--gf-finish-accent, #CD7F32) 45%, transparent);
-      background: color-mix(in srgb, var(--gf-finish-accent, #CD7F32) 14%, transparent);
+      border: 1px solid color-mix(in srgb, var(--gf-finish-accent, #CD7F32) 50%, transparent);
+      background: color-mix(in srgb, var(--gf-finish-accent, #CD7F32) 16%, transparent);
       color: var(--fgColor-default, var(--color-fg-default, #1f2328));
       text-transform: uppercase;
     }
 
+    #${PANEL_ID}.gf-panel-finish--gold .gf-chip,
+    #${PANEL_ID}.gf-panel-finish--totw .gf-chip,
+    #${PANEL_ID}.gf-panel-finish--toty .gf-chip,
+    #${PANEL_ID}.gf-panel-finish--icon .gf-chip,
+    #${PANEL_ID}.gf-panel-finish--founder .gf-chip {
+      box-shadow: 0 0 8px color-mix(in srgb, var(--gf-finish-glow) 28%, transparent);
+    }
+
     .gf-panel__blurb {
-      margin: 4px 0 0;
+      margin: 5px 0 0;
       font-size: 12px;
       color: var(--fgColor-muted, var(--color-fg-muted, #656d76));
-      line-height: 1.35;
+      line-height: 1.4;
     }
 
     .gf-panel__body {
-      padding: 10px 12px 12px;
+      padding: 12px 14px 14px;
     }
 
     .gf-stats {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 6px;
-      margin: 0 0 10px;
+      margin: 0 0 12px;
     }
 
     .gf-stat {
-      border-radius: 8px;
-      padding: 7px 8px;
-      background: var(--bgColor-default, var(--color-canvas-default, #fff));
-      border: 1px solid var(--borderColor-muted, rgba(27,31,36,0.08));
+      border-radius: 10px;
+      padding: 8px 8px;
       text-align: center;
+      background: color-mix(
+        in srgb,
+        var(--gf-finish-soft, rgba(205,127,50,0.16)) 32%,
+        var(--bgColor-muted, var(--color-canvas-subtle, #f6f8fa))
+      );
+      border: 1px solid color-mix(in srgb, var(--gf-finish-accent, #CD7F32) 20%, transparent);
+    }
+
+    #${PANEL_ID}.gf-panel-finish--toty .gf-stat,
+    #${PANEL_ID}.gf-panel-finish--icon .gf-stat,
+    #${PANEL_ID}.gf-panel-finish--founder .gf-stat {
+      border-color: color-mix(in srgb, var(--gf-finish-accent) 38%, transparent);
+      box-shadow: inset 0 0 12px color-mix(in srgb, var(--gf-finish-soft) 38%, transparent);
     }
 
     .gf-stat__value {
@@ -976,10 +1170,18 @@
 
     .gf-attrs {
       display: grid;
-      gap: 4px;
-      margin: 0 0 10px;
+      gap: 6px;
+      margin: 0 0 12px;
+      padding: 10px 11px;
+      border-radius: 10px;
       font-size: 12px;
       color: var(--fgColor-default, var(--color-fg-default, #1f2328));
+      background: color-mix(
+        in srgb,
+        var(--gf-finish-soft, rgba(205,127,50,0.16)) 18%,
+        var(--bgColor-muted, var(--color-canvas-subtle, #f6f8fa))
+      );
+      border: 1px solid color-mix(in srgb, var(--gf-finish-accent, #CD7F32) 14%, transparent);
     }
 
     .gf-attrs__row {
@@ -995,13 +1197,14 @@
     .gf-attrs__value {
       font-weight: 600;
       text-align: right;
+      font-variant-numeric: tabular-nums;
     }
 
     .gf-playstyles {
       display: flex;
       flex-wrap: wrap;
       gap: 5px;
-      margin: 0 0 10px;
+      margin: 0 0 12px;
     }
 
     .gf-playstyle {
@@ -1016,25 +1219,10 @@
 
     .gf-playstyle.is-plus {
       border-color: color-mix(in srgb, var(--gf-finish-accent, #CD7F32) 55%, transparent);
-      background: color-mix(in srgb, var(--gf-finish-accent, #CD7F32) 12%, transparent);
+      background: color-mix(in srgb, var(--gf-finish-accent, #CD7F32) 14%, transparent);
+      box-shadow: 0 0 8px color-mix(in srgb, var(--gf-finish-glow) 22%, transparent);
     }
 
-    .gf-card-img-wrap {
-      margin: 0 0 10px;
-      border-radius: 8px;
-      overflow: hidden;
-      border: 1px solid var(--borderColor-muted, rgba(27,31,36,0.08));
-      background: #0b1220;
-      aspect-ratio: 2 / 3;
-      max-height: 280px;
-    }
-
-    .gf-card-img-wrap img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
 
     .gf-actions {
       display: flex;
@@ -1047,14 +1235,15 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
-      padding: 6px 10px;
-      border-radius: 6px;
+      padding: 7px 12px;
+      border-radius: 8px;
       font-size: 12px;
       font-weight: 600;
       text-decoration: none !important;
       border: 1px solid var(--borderColor-default, var(--color-border-default, #d0d7de));
       background: var(--bgColor-default, var(--color-canvas-default, #fff));
       color: var(--fgColor-default, var(--color-fg-default, #1f2328)) !important;
+      transition: background 0.15s ease, box-shadow 0.15s ease;
     }
 
     .gf-btn-link:hover {
@@ -1063,18 +1252,94 @@
 
     .gf-btn-link--primary {
       border-color: transparent;
-      background: var(--gf-finish-accent, #CD7F32);
+      background:
+        linear-gradient(
+          145deg,
+          var(--gf-finish-shine, rgba(255,255,255,0.35)),
+          var(--gf-finish-accent, #CD7F32) 45%,
+          var(--gf-finish-deep, #5a3412)
+        );
       color: var(--gf-finish-ink, #2A1A0C) !important;
+      box-shadow: 0 0 14px color-mix(in srgb, var(--gf-finish-glow) 38%, transparent);
+    }
+
+    .gf-btn-link--primary:hover {
+      filter: brightness(1.06);
+      background:
+        linear-gradient(
+          145deg,
+          var(--gf-finish-shine, rgba(255,255,255,0.35)),
+          var(--gf-finish-accent, #CD7F32) 45%,
+          var(--gf-finish-deep, #5a3412)
+        );
     }
 
     .gf-panel__status {
-      padding: 14px 12px;
+      padding: 16px 14px;
       font-size: 13px;
       color: var(--fgColor-muted, var(--color-fg-muted, #656d76));
     }
 
     .gf-panel__status.is-error {
       color: var(--fgColor-danger, var(--color-danger-fg, #d1242f));
+    }
+
+    #${PANEL_ID} .gf-panel-skel .gf-skel {
+      display: block;
+      border-radius: 6px;
+      background: linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--fgColor-muted, #656d76) 10%, transparent) 0%,
+        color-mix(in srgb, var(--fgColor-muted, #656d76) 22%, transparent) 45%,
+        color-mix(in srgb, var(--fgColor-muted, #656d76) 10%, transparent) 90%
+      );
+      background-size: 220% 100%;
+      animation: gf-skel-shimmer 1.35s ease-in-out infinite;
+    }
+
+    #${PANEL_ID} .gf-skel--panel-ovr {
+      flex: 0 0 auto;
+      width: 56px;
+      height: 50px;
+      border-radius: 12px;
+    }
+
+    #${PANEL_ID} .gf-skel--panel-name {
+      width: 42%;
+      height: 14px;
+      border-radius: 4px;
+    }
+
+    #${PANEL_ID} .gf-skel--panel-chip {
+      width: 48px;
+      height: 18px;
+      border-radius: 999px;
+    }
+
+    #${PANEL_ID} .gf-skel--panel-blurb {
+      width: 78%;
+      height: 11px;
+      margin-top: 8px;
+    }
+
+    #${PANEL_ID} .gf-skel--panel-stat {
+      height: 48px;
+      border-radius: 10px;
+    }
+
+    #${PANEL_ID} .gf-skel--panel-attr {
+      height: 12px;
+      border-radius: 4px;
+    }
+
+    #${PANEL_ID} .gf-skel--panel-btn {
+      width: 108px;
+      height: 30px;
+      border-radius: 8px;
+    }
+
+    #${PANEL_ID} .gf-skel--panel-btn-sm {
+      width: 64px;
     }
 
     .Popover-message.gf-hc-themed {
@@ -1130,7 +1395,7 @@
       );
       background-size: 220% 100%;
       background-position: 120% 0;
-      opacity: var(--gf-hc-shine-opacity, 0);
+      opacity: 0;
     }
 
     .Popover-message.gf-hc-finish--bronze {
@@ -1185,7 +1450,7 @@
     .Popover-message.gf-hc-finish--toty .gf-hc-theme-fx__shine,
     .Popover-message.gf-hc-finish--icon .gf-hc-theme-fx__shine,
     .Popover-message.gf-hc-finish--founder .gf-hc-theme-fx__shine {
-      animation: gf-hc-shine-sweep 2.8s ease-in-out infinite;
+      animation: gf-hc-shine-sweep 1.8s ease-in-out 1 forwards;
     }
 
     .Popover-message.gf-hc-finish--totw {
@@ -1201,8 +1466,12 @@
     }
 
     @keyframes gf-hc-shine-sweep {
-      0%, 55% { background-position: 130% 0; opacity: var(--gf-hc-shine-opacity, 0.3); }
-      75% { background-position: -30% 0; opacity: calc(var(--gf-hc-shine-opacity, 0.3) * 1.2); }
+      0% { background-position: 130% 0; opacity: 0; }
+      12% { opacity: var(--gf-hc-shine-opacity, 0.3); }
+      55% {
+        background-position: -30% 0;
+        opacity: calc(var(--gf-hc-shine-opacity, 0.3) * 1.15);
+      }
       100% { background-position: -30% 0; opacity: 0; }
     }
 
@@ -1527,7 +1796,13 @@
         animation: none !important;
       }
 
-      #${HOVERCARD_BLOCK_ID} .gf-skel {
+      #${PANEL_ID},
+      #${PANEL_ID} .gf-panel-theme-fx__shine {
+        animation: none !important;
+      }
+
+      #${HOVERCARD_BLOCK_ID} .gf-skel,
+      #${PANEL_ID} .gf-skel {
         animation: none !important;
         background: color-mix(in srgb, var(--fgColor-muted, #656d76) 14%, transparent);
       }
@@ -1824,7 +2099,10 @@
   function buildProfilePanel(card) {
     const root = document.createElement('div');
     root.id = PANEL_ID;
-    applyFinishVars(root, card.finish);
+    const finish = normalizeFinish(card.finish);
+    root.classList.add(`gf-panel-finish--${finish}`);
+    applyFinishVars(root, finish);
+    root.dataset.gfFinish = finish;
 
     const report = card.report || {};
     const work = report.workRate || {};
@@ -1832,8 +2110,6 @@
     const finishLabel = card.finishLabel || String(card.finish || '').toUpperCase();
     const cardUrl = `${SITE_BASE}/${encodeURIComponent(card.login)}`;
     const duelUrl = `${SITE_BASE}/${encodeURIComponent(card.login)}/vs`;
-    const imgUrl = `${SITE_BASE}/${encodeURIComponent(card.login)}.png`;
-
     const statsHtml = STAT_ORDER.map(
       ([key, label]) => `
         <div class="gf-stat">
@@ -1853,43 +2129,84 @@
         </div>`
       : '';
 
-    const imageHtml = settings.showCardImage
-      ? `<div class="gf-card-img-wrap"><img src="${escapeHtml(imgUrl)}" alt="${escapeHtml(card.name || card.login)} GitFut card" loading="lazy" referrerpolicy="no-referrer" /></div>`
-      : '';
 
     root.innerHTML = `
-      <div class="gf-panel__head">
-        <div class="gf-panel__ovr" title="${escapeHtml(t('overall'))}">
-          <span class="gf-panel__ovr-value">${escapeHtml(card.overall)}</span>
-          <span class="gf-panel__ovr-label">${escapeHtml(t('overall'))}</span>
-        </div>
-        <div class="gf-panel__meta">
-          <div class="gf-panel__title-row">
-            <span class="gf-panel__name">${escapeHtml(card.name || card.login)}</span>
-            <span class="gf-chip">${escapeHtml(card.position || '—')}</span>
-            <span class="gf-chip">${escapeHtml(finishLabel)}</span>
+      <div class="gf-panel-theme-fx" aria-hidden="true"><div class="gf-panel-theme-fx__shine"></div></div>
+      <div class="gf-panel__inner">
+        <div class="gf-panel__head">
+          <div class="gf-panel__ovr" title="${escapeHtml(t('overall'))}">
+            <span class="gf-panel__ovr-value">${escapeHtml(card.overall)}</span>
+            <span class="gf-panel__ovr-label">${escapeHtml(t('overall'))}</span>
           </div>
-          <p class="gf-panel__blurb">${escapeHtml(card.archetype || '')}${card.archetypeBlurb ? ` — ${escapeHtml(card.archetypeBlurb)}` : ''}</p>
+          <div class="gf-panel__meta">
+            <div class="gf-panel__title-row">
+              <span class="gf-panel__name">${escapeHtml(card.name || card.login)}</span>
+              <span class="gf-chip">${escapeHtml(card.position || '—')}</span>
+              <span class="gf-chip">${escapeHtml(finishLabel)}</span>
+            </div>
+            <p class="gf-panel__blurb">${escapeHtml(card.archetype || '')}${card.archetypeBlurb ? ` — ${escapeHtml(card.archetypeBlurb)}` : ''}</p>
+          </div>
+        </div>
+        <div class="gf-panel__body">
+          <div class="gf-stats">${statsHtml}</div>
+          <div class="gf-attrs">
+            <div class="gf-attrs__row"><span class="gf-attrs__label">${escapeHtml(t('skillMoves'))}</span><span class="gf-attrs__value">${escapeHtml(renderStars(report.skillMoves))}</span></div>
+            <div class="gf-attrs__row"><span class="gf-attrs__label">${escapeHtml(t('weakFoot'))}</span><span class="gf-attrs__value">${escapeHtml(renderStars(report.weakFoot))}</span></div>
+            <div class="gf-attrs__row"><span class="gf-attrs__label">${escapeHtml(t('workRate'))}</span><span class="gf-attrs__value">${escapeHtml(`${work.attack || '—'} / ${work.defense || '—'}`)}</span></div>
+            <div class="gf-attrs__row"><span class="gf-attrs__label">${escapeHtml(t('style'))}</span><span class="gf-attrs__value">${escapeHtml(report.style || '—')}</span></div>
+            ${
+              card.topLanguage
+                ? `<div class="gf-attrs__row"><span class="gf-attrs__label">${escapeHtml(t('language'))}</span><span class="gf-attrs__value">${escapeHtml(card.topLanguage)}</span></div>`
+                : ''
+            }
+          </div>
+          ${playstylesHtml}
+          <div class="gf-actions">
+            <a class="gf-btn-link gf-btn-link--primary" href="${escapeHtml(cardUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(t('openReport'))}</a>
+            <a class="gf-btn-link" href="${escapeHtml(duelUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(t('duel'))}</a>
+          </div>
         </div>
       </div>
-      <div class="gf-panel__body">
-        <div class="gf-stats">${statsHtml}</div>
-        <div class="gf-attrs">
-          <div class="gf-attrs__row"><span class="gf-attrs__label">${escapeHtml(t('skillMoves'))}</span><span class="gf-attrs__value">${escapeHtml(renderStars(report.skillMoves))}</span></div>
-          <div class="gf-attrs__row"><span class="gf-attrs__label">${escapeHtml(t('weakFoot'))}</span><span class="gf-attrs__value">${escapeHtml(renderStars(report.weakFoot))}</span></div>
-          <div class="gf-attrs__row"><span class="gf-attrs__label">${escapeHtml(t('workRate'))}</span><span class="gf-attrs__value">${escapeHtml(`${work.attack || '—'} / ${work.defense || '—'}`)}</span></div>
-          <div class="gf-attrs__row"><span class="gf-attrs__label">${escapeHtml(t('style'))}</span><span class="gf-attrs__value">${escapeHtml(report.style || '—')}</span></div>
-          ${
-            card.topLanguage
-              ? `<div class="gf-attrs__row"><span class="gf-attrs__label">${escapeHtml(t('language'))}</span><span class="gf-attrs__value">${escapeHtml(card.topLanguage)}</span></div>`
-              : ''
-          }
+    `;
+    return root;
+  }
+
+  function buildLoadingPanel() {
+    const root = document.createElement('div');
+    root.id = PANEL_ID;
+    root.dataset.gfState = 'loading';
+    root.innerHTML = `
+      <div class="gf-panel__inner gf-panel-skel" role="status" aria-busy="true" aria-label="${escapeHtml(t('loading'))}">
+        <div class="gf-panel__head">
+          <div class="gf-skel gf-skel--panel-ovr" aria-hidden="true"></div>
+          <div class="gf-panel__meta">
+            <div class="gf-panel__title-row">
+              <span class="gf-skel gf-skel--panel-name" aria-hidden="true"></span>
+              <span class="gf-skel gf-skel--panel-chip" aria-hidden="true"></span>
+              <span class="gf-skel gf-skel--panel-chip" aria-hidden="true"></span>
+            </div>
+            <div class="gf-skel gf-skel--panel-blurb" aria-hidden="true"></div>
+          </div>
         </div>
-        ${playstylesHtml}
-        ${imageHtml}
-        <div class="gf-actions">
-          <a class="gf-btn-link gf-btn-link--primary" href="${escapeHtml(cardUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(t('openReport'))}</a>
-          <a class="gf-btn-link" href="${escapeHtml(duelUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(t('duel'))}</a>
+        <div class="gf-panel__body">
+          <div class="gf-stats">
+            <div class="gf-skel gf-skel--panel-stat" aria-hidden="true"></div>
+            <div class="gf-skel gf-skel--panel-stat" aria-hidden="true"></div>
+            <div class="gf-skel gf-skel--panel-stat" aria-hidden="true"></div>
+            <div class="gf-skel gf-skel--panel-stat" aria-hidden="true"></div>
+            <div class="gf-skel gf-skel--panel-stat" aria-hidden="true"></div>
+            <div class="gf-skel gf-skel--panel-stat" aria-hidden="true"></div>
+          </div>
+          <div class="gf-attrs">
+            <div class="gf-skel gf-skel--panel-attr" aria-hidden="true" style="width:100%"></div>
+            <div class="gf-skel gf-skel--panel-attr" aria-hidden="true" style="width:92%"></div>
+            <div class="gf-skel gf-skel--panel-attr" aria-hidden="true" style="width:86%"></div>
+            <div class="gf-skel gf-skel--panel-attr" aria-hidden="true" style="width:78%"></div>
+          </div>
+          <div class="gf-actions">
+            <span class="gf-skel gf-skel--panel-btn" aria-hidden="true"></span>
+            <span class="gf-skel gf-skel--panel-btn gf-skel--panel-btn-sm" aria-hidden="true"></span>
+          </div>
         </div>
       </div>
     `;
@@ -1924,7 +2241,7 @@
 
   async function hydrateProfile(username) {
     if (!document.getElementById(PANEL_ID)) {
-      mountProfilePanel(buildStatusPanel(t('loading'), false));
+      mountProfilePanel(buildLoadingPanel());
     }
 
     try {
@@ -2193,14 +2510,14 @@
       const currentLogin = existing?.querySelector('.gf-panel__name')?.textContent?.trim();
       if (!existing || (existing.dataset.gfUser || '').toLowerCase() !== username.toLowerCase()) {
         if (existing) existing.remove();
-        const loading = buildStatusPanel(t('loading'), false);
+        const loading = buildLoadingPanel();
         loading.dataset.gfUser = username;
         mountProfilePanel(loading);
         hydrateProfile(username).then(() => {
           const panel = document.getElementById(PANEL_ID);
           if (panel) panel.dataset.gfUser = username;
         });
-      } else if (!currentLogin && !existing.querySelector('.gf-panel__status')) {
+      } else if (!currentLogin && existing.dataset.gfState !== 'loading' && !existing.querySelector('.gf-panel__status')) {
         hydrateProfile(username);
       }
     } else {
@@ -2249,7 +2566,6 @@
     const dot = document.getElementById('gf-settings-dot');
     const customized =
       settings.cacheHours !== DEFAULT_SETTINGS.cacheHours ||
-      settings.showCardImage !== DEFAULT_SETTINGS.showCardImage ||
       settings.showHovercard !== DEFAULT_SETTINGS.showHovercard;
     if (dot) {
       dot.classList.toggle('is-on', customized);
@@ -2275,14 +2591,6 @@
 
       <div class="gf-settings-panel__section">
         <div class="gf-settings-panel__section-title">${escapeHtml(t('sectionDisplay'))}</div>
-        <div class="gf-row" style="margin-bottom:10px">
-          <label class="gf-switch">
-            <input type="checkbox" id="gf-show-card-image" />
-            <span>${escapeHtml(t('showCardImage'))}</span>
-          </label>
-          <span class="gf-pill" id="gf-show-card-image-pill">${escapeHtml(t('off'))}</span>
-        </div>
-        <p class="gf-hint">${escapeHtml(t('showCardImageHint'))}</p>
         <div class="gf-row" style="margin-bottom:10px">
           <label class="gf-switch">
             <input type="checkbox" id="gf-show-hovercard" />
@@ -2341,7 +2649,6 @@
       if (status) status.textContent = count > 0 ? t('cacheCleared', { count }) : t('cacheEmpty');
     });
 
-    panel.querySelector('#gf-show-card-image').addEventListener('change', syncDisplayPills);
     panel.querySelector('#gf-show-hovercard').addEventListener('change', syncDisplayPills);
 
     document.addEventListener('click', (e) => {
@@ -2360,12 +2667,8 @@
   function syncDisplayPills() {
     const panel = document.getElementById('gf-panel');
     if (!panel) return;
-    const imageOn = panel.querySelector('#gf-show-card-image').checked;
     const hoverOn = panel.querySelector('#gf-show-hovercard').checked;
-    const imagePill = panel.querySelector('#gf-show-card-image-pill');
     const hoverPill = panel.querySelector('#gf-show-hovercard-pill');
-    imagePill.textContent = imageOn ? t('on') : t('off');
-    imagePill.classList.toggle('is-on', imageOn);
     hoverPill.textContent = hoverOn ? t('on') : t('off');
     hoverPill.classList.toggle('is-on', hoverOn);
   }
@@ -2373,7 +2676,6 @@
   function fillPanelForm() {
     const panel = document.getElementById('gf-panel');
     if (!panel) return;
-    panel.querySelector('#gf-show-card-image').checked = settings.showCardImage !== false;
     panel.querySelector('#gf-show-hovercard').checked = settings.showHovercard !== false;
     panel.querySelector('#gf-cache-hours').value = String(normalizeCacheHours(settings.cacheHours));
     const status = panel.querySelector('#gf-cache-status');
@@ -2385,7 +2687,6 @@
     const panel = document.getElementById('gf-panel');
     if (!panel) return;
     saveSettings({
-      showCardImage: panel.querySelector('#gf-show-card-image').checked,
       showHovercard: panel.querySelector('#gf-show-hovercard').checked,
       cacheHours: normalizeCacheHours(panel.querySelector('#gf-cache-hours').value),
     });

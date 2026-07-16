@@ -5,6 +5,25 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2026-07-16
+
+### Removed
+
+- Live card PNG on profile pages (`gf-card-img-wrap` / `gitfut.com/{username}.png`) and the related settings toggle — the image endpoint is unreliable
+
+## [1.3.1] - 2026-07-16
+
+### Changed
+
+- Finish shine on profile panel and hovercards plays once on appear, then fades out (no loop)
+
+## [1.3.0] - 2026-07-16
+
+### Changed
+
+- Profile scout panel restyled to match hovercard finish theming: tinted gradients, tier glow, OVR badge, shine, and pulse on higher finishes
+- Profile loading state uses a layout skeleton instead of plain “Scouting…” text
+
 ## [1.2.2] - 2026-07-16
 
 ### Changed

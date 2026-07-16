@@ -32,7 +32,7 @@ github-gitfut/
 2. Inject a scout panel into `.js-profile-editable-area` (after followers block / before `.vcard-details`).
 3. Watch `.Popover.js-hovercard-content` and inject a GitFut block into the native user hovercard on avatar hover.
 4. Fetch `GET https://gitfut.com/api/card/{username}` via `GM_xmlhttpRequest`.
-5. Optionally show `https://gitfut.com/{username}.png` on profile pages and link to the full report / duel page.
+5. Link to the full report / duel page on gitfut.com.
 6. Cache in `GM_getValue` / `GM_setValue` (`gf_github_cache_v1`); settings in `gf_github_settings`.
 7. Re-scan on Turbo / soft-nav / pjax / `MutationObserver` because GitHub navigates without full reloads.
 
