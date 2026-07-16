@@ -10,7 +10,7 @@
 // @name:ko           GitHub GitFut
 // @name:pl           GitHub GitFut
 // @namespace         https://github.com/NemoKing1210/github-gitfut
-// @version           1.1.0
+// @version           1.2.0
 // @description       Adds GitFut scouting cards on GitHub profiles and avatar hovercards
 // @description:ru    Добавляет карточки GitFut на профили GitHub и в поповеры аватаров
 // @description:zh-CN 在 GitHub 个人资料页与头像悬停卡片中显示 GitFut 球探信息
@@ -74,14 +74,72 @@
   ]);
 
   const FINISH_COLORS = {
-    bronze: { accent: '#CD7F32', ink: '#2A1A0C', soft: 'rgba(205,127,50,0.18)' },
-    silver: { accent: '#AAB2BD', ink: '#1F242B', soft: 'rgba(170,178,189,0.2)' },
-    gold: { accent: '#E6B422', ink: '#3A2806', soft: 'rgba(230,180,34,0.2)' },
-    totw: { accent: '#E03E52', ink: '#4A0A14', soft: 'rgba(224,62,82,0.18)' },
-    toty: { accent: '#3B7AFF', ink: '#10254F', soft: 'rgba(59,122,255,0.18)' },
-    icon: { accent: '#F3D688', ink: '#2A1A45', soft: 'rgba(243,214,136,0.22)' },
-    founder: { accent: '#FF5A7A', ink: '#3A0A18', soft: 'rgba(255,90,122,0.2)' },
+    bronze: {
+      accent: '#CD7F32',
+      ink: '#2A1A0C',
+      soft: 'rgba(205,127,50,0.16)',
+      glow: 'rgba(205,127,50,0.28)',
+      deep: '#5a3412',
+      shine: 'rgba(255,198,120,0.45)',
+      tier: 1,
+    },
+    silver: {
+      accent: '#AAB2BD',
+      ink: '#1F242B',
+      soft: 'rgba(170,178,189,0.2)',
+      glow: 'rgba(180,190,205,0.4)',
+      deep: '#3a4250',
+      shine: 'rgba(255,255,255,0.55)',
+      tier: 2,
+    },
+    gold: {
+      accent: '#E6B422',
+      ink: '#3A2806',
+      soft: 'rgba(230,180,34,0.22)',
+      glow: 'rgba(230,180,34,0.55)',
+      deep: '#7a5608',
+      shine: 'rgba(255,236,160,0.7)',
+      tier: 3,
+    },
+    totw: {
+      accent: '#E03E52',
+      ink: '#4A0A14',
+      soft: 'rgba(224,62,82,0.2)',
+      glow: 'rgba(224,62,82,0.55)',
+      deep: '#6a1020',
+      shine: 'rgba(255,140,160,0.65)',
+      tier: 4,
+    },
+    toty: {
+      accent: '#3B7AFF',
+      ink: '#10254F',
+      soft: 'rgba(59,122,255,0.22)',
+      glow: 'rgba(59,122,255,0.6)',
+      deep: '#0a1f5c',
+      shine: 'rgba(160,200,255,0.75)',
+      tier: 5,
+    },
+    icon: {
+      accent: '#F3D688',
+      ink: '#2A1A45',
+      soft: 'rgba(243,214,136,0.24)',
+      glow: 'rgba(180,120,255,0.55)',
+      deep: '#3a1a70',
+      shine: 'rgba(255,240,200,0.85)',
+      tier: 6,
+    },
+    founder: {
+      accent: '#FF5A7A',
+      ink: '#3A0A18',
+      soft: 'rgba(255,90,122,0.22)',
+      glow: 'rgba(255,90,122,0.6)',
+      deep: '#5a1028',
+      shine: 'rgba(255,180,200,0.8)',
+      tier: 7,
+    },
   };
+  const FINISH_KEYS = Object.keys(FINISH_COLORS);
+  const FINISH_CLASS_RE = /^gf-hc-finish--/;
 
   const STAT_ORDER = [
     ['pac', 'PAC'],
@@ -1019,11 +1077,250 @@
       color: var(--fgColor-danger, var(--color-danger-fg, #d1242f));
     }
 
+    .Popover-message.gf-hc-themed {
+      position: relative;
+      isolation: isolate;
+      border-color: color-mix(
+        in srgb,
+        var(--gf-finish-accent, #CD7F32) 58%,
+        var(--borderColor-default, #d0d7de)
+      ) !important;
+      background:
+        radial-gradient(
+          120% 80% at 0% 0%,
+          var(--gf-finish-soft, rgba(205,127,50,0.16)),
+          transparent 55%
+        ),
+        radial-gradient(
+          90% 70% at 100% 100%,
+          color-mix(in srgb, var(--gf-finish-glow, rgba(205,127,50,0.28)) 35%, transparent),
+          transparent 60%
+        ),
+        var(--bgColor-default, var(--color-canvas-default, #fff)) !important;
+      box-shadow:
+        var(--gf-hc-outer-glow, 0 0 0 transparent),
+        var(--gf-hc-ring, 0 0 0 1px transparent),
+        0 10px 28px rgba(1, 4, 9, 0.2) !important;
+      transition: box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+    }
+
+    .Popover-message.gf-hc-themed > .gf-hc-theme-fx {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .Popover-message.gf-hc-themed > .gf-hc-theme-fx + * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .gf-hc-theme-fx__bar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: var(--gf-hc-bar, 2px);
+      background: linear-gradient(
+        90deg,
+        var(--gf-finish-deep, #5a3412),
+        var(--gf-finish-accent, #CD7F32),
+        var(--gf-finish-shine, rgba(255,198,120,0.45)),
+        var(--gf-finish-accent, #CD7F32)
+      );
+      background-size: 200% 100%;
+    }
+
+    .gf-hc-theme-fx__shine {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        115deg,
+        transparent 35%,
+        var(--gf-finish-shine, rgba(255,255,255,0.35)) 48%,
+        transparent 62%
+      );
+      background-size: 220% 100%;
+      background-position: 120% 0;
+      opacity: var(--gf-hc-shine-opacity, 0);
+    }
+
+    .Popover-message.gf-hc-finish--bronze {
+      --gf-hc-bar: 2px;
+      --gf-hc-shine-opacity: 0;
+      --gf-hc-ring: inset 0 0 0 1px color-mix(in srgb, var(--gf-finish-accent) 28%, transparent);
+      --gf-hc-outer-glow: 0 0 0 transparent;
+    }
+
+    .Popover-message.gf-hc-finish--silver {
+      --gf-hc-bar: 2px;
+      --gf-hc-shine-opacity: 0.18;
+      --gf-hc-ring: inset 0 0 0 1px color-mix(in srgb, var(--gf-finish-accent) 40%, transparent);
+      --gf-hc-outer-glow: 0 0 16px color-mix(in srgb, var(--gf-finish-glow) 45%, transparent);
+    }
+
+    .Popover-message.gf-hc-finish--gold {
+      --gf-hc-bar: 3px;
+      --gf-hc-shine-opacity: 0.32;
+      --gf-hc-ring: inset 0 0 0 1px color-mix(in srgb, var(--gf-finish-accent) 55%, transparent);
+      --gf-hc-outer-glow:
+        0 0 22px color-mix(in srgb, var(--gf-finish-glow) 70%, transparent),
+        0 0 40px color-mix(in srgb, var(--gf-finish-glow) 28%, transparent);
+    }
+
+    .Popover-message.gf-hc-finish--totw {
+      --gf-hc-bar: 3px;
+      --gf-hc-shine-opacity: 0.28;
+      --gf-hc-ring: inset 0 0 0 1px color-mix(in srgb, var(--gf-finish-accent) 60%, transparent);
+      --gf-hc-outer-glow:
+        0 0 24px color-mix(in srgb, var(--gf-finish-glow) 75%, transparent),
+        0 0 48px color-mix(in srgb, var(--gf-finish-glow) 30%, transparent);
+    }
+
+    .Popover-message.gf-hc-finish--toty {
+      --gf-hc-bar: 3px;
+      --gf-hc-shine-opacity: 0.38;
+      --gf-hc-ring: inset 0 0 0 1px color-mix(in srgb, var(--gf-finish-accent) 65%, transparent);
+      --gf-hc-outer-glow:
+        0 0 28px color-mix(in srgb, var(--gf-finish-glow) 80%, transparent),
+        0 0 56px color-mix(in srgb, var(--gf-finish-glow) 35%, transparent);
+    }
+
+    .Popover-message.gf-hc-finish--icon,
+    .Popover-message.gf-hc-finish--founder {
+      --gf-hc-bar: 4px;
+      --gf-hc-shine-opacity: 0.45;
+      --gf-hc-ring:
+        inset 0 0 0 1px color-mix(in srgb, var(--gf-finish-accent) 70%, transparent),
+        inset 0 0 28px color-mix(in srgb, var(--gf-finish-soft) 55%, transparent);
+      --gf-hc-outer-glow:
+        0 0 32px color-mix(in srgb, var(--gf-finish-glow) 85%, transparent),
+        0 0 64px color-mix(in srgb, var(--gf-finish-glow) 40%, transparent);
+    }
+
+    .Popover-message.gf-hc-finish--gold .gf-hc-theme-fx__bar,
+    .Popover-message.gf-hc-finish--totw .gf-hc-theme-fx__bar,
+    .Popover-message.gf-hc-finish--toty .gf-hc-theme-fx__bar,
+    .Popover-message.gf-hc-finish--icon .gf-hc-theme-fx__bar,
+    .Popover-message.gf-hc-finish--founder .gf-hc-theme-fx__bar {
+      animation: gf-hc-bar-shift 3.2s linear infinite;
+    }
+
+    .Popover-message.gf-hc-finish--gold .gf-hc-theme-fx__shine,
+    .Popover-message.gf-hc-finish--totw .gf-hc-theme-fx__shine,
+    .Popover-message.gf-hc-finish--toty .gf-hc-theme-fx__shine,
+    .Popover-message.gf-hc-finish--icon .gf-hc-theme-fx__shine,
+    .Popover-message.gf-hc-finish--founder .gf-hc-theme-fx__shine {
+      animation: gf-hc-shine-sweep 2.8s ease-in-out infinite;
+    }
+
+    .Popover-message.gf-hc-finish--totw {
+      animation: gf-hc-pulse-totw 2.4s ease-in-out infinite;
+    }
+
+    .Popover-message.gf-hc-finish--icon {
+      animation: gf-hc-pulse-icon 2.8s ease-in-out infinite;
+    }
+
+    .Popover-message.gf-hc-finish--founder {
+      animation: gf-hc-pulse-founder 2.2s ease-in-out infinite;
+    }
+
+    @keyframes gf-hc-bar-shift {
+      0% { background-position: 0% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    @keyframes gf-hc-shine-sweep {
+      0%, 55% { background-position: 130% 0; opacity: var(--gf-hc-shine-opacity, 0.3); }
+      75% { background-position: -30% 0; opacity: calc(var(--gf-hc-shine-opacity, 0.3) * 1.2); }
+      100% { background-position: -30% 0; opacity: 0; }
+    }
+
+    @keyframes gf-hc-pulse-totw {
+      0%, 100% {
+        box-shadow:
+          0 0 22px color-mix(in srgb, var(--gf-finish-glow) 55%, transparent),
+          0 0 40px color-mix(in srgb, var(--gf-finish-glow) 22%, transparent),
+          inset 0 0 0 1px color-mix(in srgb, var(--gf-finish-accent) 55%, transparent),
+          0 10px 28px rgba(1, 4, 9, 0.2);
+      }
+      50% {
+        box-shadow:
+          0 0 34px color-mix(in srgb, var(--gf-finish-glow) 85%, transparent),
+          0 0 60px color-mix(in srgb, var(--gf-finish-glow) 40%, transparent),
+          inset 0 0 0 1px color-mix(in srgb, var(--gf-finish-accent) 75%, transparent),
+          0 12px 32px rgba(1, 4, 9, 0.24);
+      }
+    }
+
+    @keyframes gf-hc-pulse-icon {
+      0%, 100% {
+        box-shadow:
+          0 0 28px color-mix(in srgb, var(--gf-finish-glow) 60%, transparent),
+          0 0 50px color-mix(in srgb, var(--gf-finish-accent) 28%, transparent),
+          inset 0 0 24px color-mix(in srgb, var(--gf-finish-soft) 40%, transparent),
+          0 10px 28px rgba(1, 4, 9, 0.22);
+      }
+      50% {
+        box-shadow:
+          0 0 42px color-mix(in srgb, var(--gf-finish-glow) 90%, transparent),
+          0 0 72px color-mix(in srgb, var(--gf-finish-accent) 45%, transparent),
+          inset 0 0 36px color-mix(in srgb, var(--gf-finish-soft) 55%, transparent),
+          0 14px 34px rgba(1, 4, 9, 0.26);
+      }
+    }
+
+    @keyframes gf-hc-pulse-founder {
+      0%, 100% {
+        box-shadow:
+          0 0 30px color-mix(in srgb, var(--gf-finish-glow) 65%, transparent),
+          0 0 54px color-mix(in srgb, var(--gf-finish-accent) 30%, transparent),
+          inset 0 0 26px color-mix(in srgb, var(--gf-finish-soft) 45%, transparent),
+          0 10px 28px rgba(1, 4, 9, 0.22);
+      }
+      50% {
+        box-shadow:
+          0 0 46px color-mix(in srgb, var(--gf-finish-glow) 95%, transparent),
+          0 0 78px color-mix(in srgb, var(--gf-finish-accent) 48%, transparent),
+          inset 0 0 40px color-mix(in srgb, var(--gf-finish-soft) 60%, transparent),
+          0 14px 36px rgba(1, 4, 9, 0.28);
+      }
+    }
+
     #${HOVERCARD_BLOCK_ID} {
+      position: relative;
+      z-index: 1;
       margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px solid var(--borderColor-muted, rgba(27,31,36,0.12));
+      padding: 12px 10px 10px;
+      margin-left: -4px;
+      margin-right: -4px;
+      border-radius: 10px;
+      border-top: 1px solid color-mix(in srgb, var(--gf-finish-accent, #CD7F32) 35%, transparent);
+      background:
+        linear-gradient(
+          180deg,
+          color-mix(in srgb, var(--gf-finish-soft, rgba(205,127,50,0.16)) 70%, transparent),
+          transparent 85%
+        );
       font-family: var(--gf-font);
+      box-shadow: var(--gf-hc-block-glow, none);
+    }
+
+    #${HOVERCARD_BLOCK_ID}.gf-hc-finish--gold,
+    #${HOVERCARD_BLOCK_ID}.gf-hc-finish--totw,
+    #${HOVERCARD_BLOCK_ID}.gf-hc-finish--toty {
+      --gf-hc-block-glow: inset 0 0 20px color-mix(in srgb, var(--gf-finish-soft) 45%, transparent);
+    }
+
+    #${HOVERCARD_BLOCK_ID}.gf-hc-finish--icon,
+    #${HOVERCARD_BLOCK_ID}.gf-hc-finish--founder {
+      --gf-hc-block-glow:
+        inset 0 0 28px color-mix(in srgb, var(--gf-finish-soft) 60%, transparent),
+        0 0 18px color-mix(in srgb, var(--gf-finish-glow) 25%, transparent);
     }
 
     #${HOVERCARD_BLOCK_ID} .gf-hc__head {
@@ -1038,11 +1335,34 @@
       min-width: 44px;
       padding: 6px 8px;
       border-radius: 8px;
-      background: var(--gf-finish-accent, #CD7F32);
+      background:
+        linear-gradient(
+          145deg,
+          var(--gf-finish-shine, rgba(255,255,255,0.35)),
+          var(--gf-finish-accent, #CD7F32) 40%,
+          var(--gf-finish-deep, #5a3412)
+        );
       color: var(--gf-finish-ink, #2A1A0C);
       text-align: center;
       line-height: 1.05;
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, var(--gf-finish-shine) 55%, transparent),
+        0 0 0 1px color-mix(in srgb, var(--gf-finish-deep) 35%, transparent),
+        var(--gf-hc-ovr-glow, none);
+    }
+
+    #${HOVERCARD_BLOCK_ID}.gf-hc-finish--silver .gf-hc__ovr,
+    #${HOVERCARD_BLOCK_ID}.gf-hc-finish--gold .gf-hc__ovr {
+      --gf-hc-ovr-glow: 0 0 12px color-mix(in srgb, var(--gf-finish-glow) 55%, transparent);
+    }
+
+    #${HOVERCARD_BLOCK_ID}.gf-hc-finish--totw .gf-hc__ovr,
+    #${HOVERCARD_BLOCK_ID}.gf-hc-finish--toty .gf-hc__ovr,
+    #${HOVERCARD_BLOCK_ID}.gf-hc-finish--icon .gf-hc__ovr,
+    #${HOVERCARD_BLOCK_ID}.gf-hc-finish--founder .gf-hc__ovr {
+      --gf-hc-ovr-glow:
+        0 0 16px color-mix(in srgb, var(--gf-finish-glow) 75%, transparent),
+        0 0 28px color-mix(in srgb, var(--gf-finish-glow) 35%, transparent);
     }
 
     #${HOVERCARD_BLOCK_ID} .gf-hc__ovr-value {
@@ -1051,6 +1371,7 @@
       font-weight: 800;
       letter-spacing: -0.03em;
       font-variant-numeric: tabular-nums;
+      text-shadow: 0 1px 0 color-mix(in srgb, var(--gf-finish-shine) 40%, transparent);
     }
 
     #${HOVERCARD_BLOCK_ID} .gf-hc__ovr-label {
@@ -1074,6 +1395,19 @@
       margin-bottom: 2px;
     }
 
+    #${HOVERCARD_BLOCK_ID} .gf-chip {
+      border-color: color-mix(in srgb, var(--gf-finish-accent, #CD7F32) 50%, transparent);
+      background: color-mix(in srgb, var(--gf-finish-accent, #CD7F32) 16%, transparent);
+    }
+
+    #${HOVERCARD_BLOCK_ID}.gf-hc-finish--gold .gf-chip,
+    #${HOVERCARD_BLOCK_ID}.gf-hc-finish--totw .gf-chip,
+    #${HOVERCARD_BLOCK_ID}.gf-hc-finish--toty .gf-chip,
+    #${HOVERCARD_BLOCK_ID}.gf-hc-finish--icon .gf-chip,
+    #${HOVERCARD_BLOCK_ID}.gf-hc-finish--founder .gf-chip {
+      box-shadow: 0 0 8px color-mix(in srgb, var(--gf-finish-glow) 30%, transparent);
+    }
+
     #${HOVERCARD_BLOCK_ID} .gf-hc__blurb {
       margin: 0;
       font-size: 11px;
@@ -1092,8 +1426,19 @@
       text-align: center;
       padding: 5px 2px;
       border-radius: 6px;
-      background: var(--bgColor-muted, var(--color-canvas-subtle, #f6f8fa));
-      border: 1px solid var(--borderColor-muted, rgba(27,31,36,0.08));
+      background: color-mix(
+        in srgb,
+        var(--gf-finish-soft, rgba(205,127,50,0.16)) 35%,
+        var(--bgColor-muted, var(--color-canvas-subtle, #f6f8fa))
+      );
+      border: 1px solid color-mix(in srgb, var(--gf-finish-accent, #CD7F32) 22%, transparent);
+    }
+
+    #${HOVERCARD_BLOCK_ID}.gf-hc-finish--toty .gf-hc__stat,
+    #${HOVERCARD_BLOCK_ID}.gf-hc-finish--icon .gf-hc__stat,
+    #${HOVERCARD_BLOCK_ID}.gf-hc-finish--founder .gf-hc__stat {
+      border-color: color-mix(in srgb, var(--gf-finish-accent) 40%, transparent);
+      box-shadow: inset 0 0 10px color-mix(in srgb, var(--gf-finish-soft) 40%, transparent);
     }
 
     #${HOVERCARD_BLOCK_ID} .gf-hc__stat-value {
@@ -1133,8 +1478,15 @@
 
     #${HOVERCARD_BLOCK_ID} .gf-hc__link--primary {
       border-color: transparent;
-      background: var(--gf-finish-accent, #CD7F32);
+      background:
+        linear-gradient(
+          145deg,
+          var(--gf-finish-shine, rgba(255,255,255,0.35)),
+          var(--gf-finish-accent, #CD7F32) 45%,
+          var(--gf-finish-deep, #5a3412)
+        );
       color: var(--gf-finish-ink, #2A1A0C) !important;
+      box-shadow: 0 0 12px color-mix(in srgb, var(--gf-finish-glow) 40%, transparent);
     }
 
     #${HOVERCARD_BLOCK_ID} .gf-hc__status {
@@ -1144,6 +1496,14 @@
 
     #${HOVERCARD_BLOCK_ID} .gf-hc__status.is-error {
       color: var(--fgColor-danger, var(--color-danger-fg, #d1242f));
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .Popover-message.gf-hc-themed,
+      .Popover-message.gf-hc-themed .gf-hc-theme-fx__bar,
+      .Popover-message.gf-hc-themed .gf-hc-theme-fx__shine {
+        animation: none !important;
+      }
     }
 
     #gf-settings-btn {
@@ -1365,11 +1725,67 @@
     }
   `);
 
+  function normalizeFinish(finish) {
+    const key = String(finish || 'bronze').toLowerCase();
+    return FINISH_KEYS.includes(key) ? key : 'bronze';
+  }
+
   function applyFinishVars(el, finish) {
     const meta = finishMeta(finish);
     el.style.setProperty('--gf-finish-accent', meta.accent);
     el.style.setProperty('--gf-finish-ink', meta.ink);
     el.style.setProperty('--gf-finish-soft', meta.soft);
+    el.style.setProperty('--gf-finish-glow', meta.glow);
+    el.style.setProperty('--gf-finish-deep', meta.deep);
+    el.style.setProperty('--gf-finish-shine', meta.shine);
+  }
+
+  function clearFinishClasses(el) {
+    if (!el?.classList) return;
+    el.classList.remove('gf-hc-themed');
+    for (const cls of [...el.classList]) {
+      if (FINISH_CLASS_RE.test(cls)) el.classList.remove(cls);
+    }
+  }
+
+  function clearHovercardTheme(popover) {
+    const message = popover?.querySelector?.('.Popover-message') || popover;
+    if (!(message instanceof HTMLElement)) return;
+    clearFinishClasses(message);
+    delete message.dataset.gfFinish;
+    message.querySelector('.gf-hc-theme-fx')?.remove();
+    for (const key of [
+      '--gf-finish-accent',
+      '--gf-finish-ink',
+      '--gf-finish-soft',
+      '--gf-finish-glow',
+      '--gf-finish-deep',
+      '--gf-finish-shine',
+    ]) {
+      message.style.removeProperty(key);
+    }
+  }
+
+  function ensureHovercardThemeFx(message) {
+    let fx = message.querySelector(':scope > .gf-hc-theme-fx');
+    if (fx) return fx;
+    fx = document.createElement('div');
+    fx.className = 'gf-hc-theme-fx';
+    fx.setAttribute('aria-hidden', 'true');
+    fx.innerHTML = '<div class="gf-hc-theme-fx__bar"></div><div class="gf-hc-theme-fx__shine"></div>';
+    message.insertBefore(fx, message.firstChild);
+    return fx;
+  }
+
+  function applyHovercardTheme(popover, finish) {
+    const message = popover?.querySelector?.('.Popover-message');
+    if (!(message instanceof HTMLElement)) return;
+    const key = normalizeFinish(finish);
+    clearFinishClasses(message);
+    message.classList.add('gf-hc-themed', `gf-hc-finish--${key}`);
+    message.dataset.gfFinish = key;
+    applyFinishVars(message, key);
+    ensureHovercardThemeFx(message);
   }
 
   function renderStars(count) {
@@ -1543,8 +1959,13 @@
   }
 
   function renderHovercardContent(block, card) {
-    applyFinishVars(block, card.finish);
-    const finishLabel = card.finishLabel || String(card.finish || '').toUpperCase();
+    const finish = normalizeFinish(card.finish);
+    clearFinishClasses(block);
+    block.classList.add(`gf-hc-finish--${finish}`);
+    applyFinishVars(block, finish);
+    block.dataset.gfFinish = finish;
+
+    const finishLabel = card.finishLabel || finish.toUpperCase();
     const cardUrl = `${SITE_BASE}/${encodeURIComponent(card.login)}`;
     const duelUrl = `${SITE_BASE}/${encodeURIComponent(card.login)}/vs`;
     const statsHtml = STAT_ORDER.map(
@@ -1578,6 +1999,9 @@
         <a class="gf-hc__link" href="${escapeHtml(duelUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(t('duel'))}</a>
       </div>
     `;
+
+    const popover = block.closest('.Popover.js-hovercard-content');
+    if (popover) applyHovercardTheme(popover, finish);
   }
 
   async function hydrateHovercardBlock(block, login) {
@@ -1609,10 +2033,17 @@
   function injectIntoHovercard(popover) {
     if (!settings.showHovercard) {
       popover.querySelector(`#${HOVERCARD_BLOCK_ID}`)?.remove();
+      clearHovercardTheme(popover);
       return;
     }
-    if (!isVisibleHovercard(popover)) return;
-    if (!popover.querySelector('.user-hovercard-avatar, [data-hydro-view*="user-hovercard"]')) return;
+    if (!isVisibleHovercard(popover)) {
+      clearHovercardTheme(popover);
+      return;
+    }
+    if (!popover.querySelector('.user-hovercard-avatar, [data-hydro-view*="user-hovercard"]')) {
+      clearHovercardTheme(popover);
+      return;
+    }
 
     const login = getHovercardLogin(popover);
     if (!login) return;
@@ -1628,6 +2059,13 @@
         block.dataset.gfState === 'ready' ||
         block.dataset.gfState === 'done')
     ) {
+      // Re-apply theme if GitHub rebuilt the Popover-message chrome
+      if (block.dataset.gfState === 'ready' && block.dataset.gfFinish) {
+        const message = popover.querySelector('.Popover-message');
+        if (message && message.dataset.gfFinish !== block.dataset.gfFinish) {
+          applyHovercardTheme(popover, block.dataset.gfFinish);
+        }
+      }
       return;
     }
 

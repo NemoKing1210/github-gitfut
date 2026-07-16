@@ -2,7 +2,7 @@
 
 [![Install userscript](https://img.shields.io/badge/Install-userscript-238636?style=for-the-badge)](https://raw.githubusercontent.com/NemoKing1210/github-gitfut/main/github-gitfut.user.js)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.1.0-green?style=for-the-badge)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.2.0-green?style=for-the-badge)](CHANGELOG.md)
 
 A userscript for GitHub that adds [GitFut](https://gitfut.com) scouting — World Cup–style player cards rated out of 99 — while you browse profiles and hover user avatars.
 
@@ -57,9 +57,10 @@ Managers compare the installed `@version` with the remote metadata to decide whe
 ## Features
 
 - **Profile scout panel** — overall (OVR), position, finish tier, PAC / SHO / PAS / DRI / DEF / PHY, attributes, and playstyles in the profile sidebar
-- **Live card image** — optional PNG from `gitfut.com/{username}.png`
-- **Inline OVR badges** — compact chips next to usernames across GitHub (lazy-loaded near the viewport)
-- **Settings panel** — header button + manager menu: card image, inline badges, cache duration, clear cache
+- **Avatar hovercard** — GitFut block inside GitHub’s native popover on avatar hover
+- **Finish-tier theming** — popover tint, glow, and shine scale with Bronze → Icon / Founder
+- **Live card image** — optional PNG from `gitfut.com/{username}.png` on profile pages
+- **Settings panel** — header button + manager menu: card image, hovercard injection, cache duration, clear cache
 - **Smart caching** — responses cached locally to reduce API load
 - **Soft navigation** — works with GitHub Turbo / soft-nav profile switches
 - **10 UI languages** — English, Russian, Chinese, Spanish, Portuguese, German, French, Japanese, Korean, Polish (detected from browser locale)
