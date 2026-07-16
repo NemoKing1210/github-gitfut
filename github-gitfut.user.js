@@ -10,7 +10,7 @@
 // @name:ko           GitHub GitFut
 // @name:pl           GitHub GitFut
 // @namespace         https://github.com/NemoKing1210/github-gitfut
-// @version           1.7.0
+// @version           1.8.0
 // @description       Adds GitFut scouting cards on GitHub profiles and avatar hovercards
 // @description:ru    Добавляет карточки GitFut на профили GitHub и в поповеры аватаров
 // @description:zh-CN 在 GitHub 个人资料页与头像悬停卡片中显示 GitFut 球探信息
@@ -54,14 +54,14 @@
   const CACHE_BUDGET_BYTES = 5 * 1024 * 1024;
   /** Fallback if GM_info is unavailable — keep in sync with @version. */
   const SCRIPT_VERSION =
-    (typeof GM_info !== 'undefined' && GM_info?.script?.version) || '1.7.0';
+    (typeof GM_info !== 'undefined' && GM_info?.script?.version) || '1.8.0';
   const CACHE_HOURS_MAX = 168;
   const DEFAULT_SETTINGS = {
     cacheHours: 12,
     showHovercard: true,
     cardTheme: 'standard',
   };
-  const CARD_THEMES = ['standard', 'fifa', 'neon'];
+  const CARD_THEMES = ['standard', 'github', 'fifa', 'neon'];
   const MAX_CONCURRENT = 2;
   const REQUEST_DELAY_MS = 100;
   const CACHE_PERSIST_MS = 1000;
@@ -185,8 +185,9 @@
       showHovercard: 'Show GitFut in avatar hovercards',
       showHovercardHint: 'Injects OVR, position, and stats into GitHub’s user popover on avatar hover.',
       cardTheme: 'Card style',
-      cardThemeHint: 'Standard, FIFA (metallic finishes), or Neon (dark cards with glowing accents).',
+      cardThemeHint: 'Standard, GitHub (subtle Primer look), FIFA (metallic), or Neon (glow).',
       cardThemeStandard: 'Standard',
+      cardThemeGithub: 'GitHub',
       cardThemeFifa: 'FIFA',
       cardThemeNeon: 'Neon',
       on: 'ON',
@@ -234,8 +235,9 @@
       showHovercard: 'GitFut в поповере аватара',
       showHovercardHint: 'Добавляет OVR, позицию и статы в нативный hovercard GitHub при наведении на аватар.',
       cardTheme: 'Оформление карточек',
-      cardThemeHint: 'Стандартный, FIFA (металл) или Неон (тёмные карточки со свечением).',
+      cardThemeHint: 'Стандартный, GitHub (спокойный Primer), FIFA (металл) или Неон (свечение).',
       cardThemeStandard: 'Стандартный вид',
+      cardThemeGithub: 'GitHub',
       cardThemeFifa: 'FIFA',
       cardThemeNeon: 'Неон',
       on: 'ВКЛ',
@@ -285,6 +287,7 @@
       cardTheme: '卡片样式',
       cardThemeHint: '资料页与悬停卡片球探面板的视觉风格。',
       cardThemeStandard: '标准',
+      cardThemeGithub: 'GitHub',
       cardThemeFifa: 'FIFA',
       cardThemeNeon: '霓虹',
       on: '开',
@@ -334,6 +337,7 @@
       cardTheme: 'Estilo de carta',
       cardThemeHint: 'Acabado visual del panel en perfil y hovercard.',
       cardThemeStandard: 'Estándar',
+      cardThemeGithub: 'GitHub',
       cardThemeFifa: 'FIFA',
       cardThemeNeon: 'Neón',
       on: 'ON',
@@ -383,6 +387,7 @@
       cardTheme: 'Estilo da carta',
       cardThemeHint: 'Visual do painel no perfil e no hovercard.',
       cardThemeStandard: 'Padrão',
+      cardThemeGithub: 'GitHub',
       cardThemeFifa: 'FIFA',
       cardThemeNeon: 'Neon',
       on: 'ON',
@@ -432,6 +437,7 @@
       cardTheme: 'Kartenstil',
       cardThemeHint: 'Optik der Scout-Panels auf Profil und Hovercard.',
       cardThemeStandard: 'Standard',
+      cardThemeGithub: 'GitHub',
       cardThemeFifa: 'FIFA',
       cardThemeNeon: 'Neon',
       on: 'AN',
@@ -481,6 +487,7 @@
       cardTheme: 'Style de carte',
       cardThemeHint: 'Apparence des panneaux scout sur profil et hovercard.',
       cardThemeStandard: 'Standard',
+      cardThemeGithub: 'GitHub',
       cardThemeFifa: 'FIFA',
       cardThemeNeon: 'Néon',
       on: 'ON',
@@ -530,6 +537,7 @@
       cardTheme: 'カードスタイル',
       cardThemeHint: 'プロフィールとホバーカードの見た目。',
       cardThemeStandard: 'スタンダード',
+      cardThemeGithub: 'GitHub',
       cardThemeFifa: 'FIFA',
       cardThemeNeon: 'ネオン',
       on: 'ON',
@@ -579,6 +587,7 @@
       cardTheme: '카드 스타일',
       cardThemeHint: '프로필·호버카드 스카우트 패널의 시각 스타일.',
       cardThemeStandard: '기본',
+      cardThemeGithub: 'GitHub',
       cardThemeFifa: 'FIFA',
       cardThemeNeon: '네온',
       on: 'ON',
@@ -628,6 +637,7 @@
       cardTheme: 'Styl karty',
       cardThemeHint: 'Wygląd paneli scout na profilu i w hovercard.',
       cardThemeStandard: 'Standardowy',
+      cardThemeGithub: 'GitHub',
       cardThemeFifa: 'FIFA',
       cardThemeNeon: 'Neon',
       on: 'WŁ',
@@ -693,6 +703,7 @@
   function applyCardTheme() {
     const theme = normalizeCardTheme(settings.cardTheme);
     document.documentElement.dataset.gfCardTheme = theme;
+    document.documentElement.classList.toggle('gf-card-theme-github', theme === 'github');
     document.documentElement.classList.toggle('gf-card-theme-fifa', theme === 'fifa');
     document.documentElement.classList.toggle('gf-card-theme-neon', theme === 'neon');
   }
@@ -2474,6 +2485,174 @@
       }
     }
 
+    /* GitHub theme: Primer tokens, no glow / shine / finish flash */
+    html.gf-card-theme-github #${PANEL_ID},
+    html.gf-card-theme-github .Popover-message.gf-hc-themed {
+      --gf-panel-outer-glow: 0 0 0 transparent !important;
+      --gf-panel-ring: 0 0 0 transparent !important;
+      --gf-panel-ovr-glow: none !important;
+      --gf-hc-outer-glow: 0 0 0 transparent !important;
+      --gf-hc-ring: 0 0 0 transparent !important;
+      --gf-hc-ovr-glow: none !important;
+      --gf-hc-block-glow: none !important;
+      --gf-hc-shine-opacity: 0 !important;
+      animation: none !important;
+      color: var(--fgColor-default, var(--color-fg-default, #1f2328));
+      border-color: var(--borderColor-default, var(--color-border-default, #d0d7de)) !important;
+      border-radius: 6px !important;
+      background: var(--bgColor-default, var(--color-canvas-default, #fff)) !important;
+      box-shadow: none !important;
+    }
+
+    html.gf-card-theme-github #${PANEL_ID} .gf-panel-theme-fx,
+    html.gf-card-theme-github .Popover-message.gf-hc-themed > .gf-hc-theme-fx,
+    html.gf-card-theme-github .gf-panel-theme-fx__shine,
+    html.gf-card-theme-github .gf-hc-theme-fx__shine {
+      display: none !important;
+    }
+
+    html.gf-card-theme-github #${PANEL_ID} .gf-panel__head {
+      background: transparent !important;
+      border-bottom-color: var(--borderColor-muted, var(--color-border-muted, rgba(27,31,36,0.15))) !important;
+      padding: 12px;
+    }
+
+    html.gf-card-theme-github #${PANEL_ID} .gf-panel__name,
+    html.gf-card-theme-github #${PANEL_ID} .gf-stat__value,
+    html.gf-card-theme-github #${PANEL_ID} .gf-attrs,
+    html.gf-card-theme-github #${PANEL_ID} .gf-attrs__value,
+    html.gf-card-theme-github #${HOVERCARD_BLOCK_ID} .gf-hc__stat-value {
+      color: var(--fgColor-default, var(--color-fg-default, #1f2328)) !important;
+    }
+
+    html.gf-card-theme-github #${PANEL_ID} .gf-panel__blurb,
+    html.gf-card-theme-github #${PANEL_ID} .gf-stat__key,
+    html.gf-card-theme-github #${PANEL_ID} .gf-attrs__label,
+    html.gf-card-theme-github #${HOVERCARD_BLOCK_ID} .gf-hc__blurb,
+    html.gf-card-theme-github #${HOVERCARD_BLOCK_ID} .gf-hc__stat-key {
+      color: var(--fgColor-muted, var(--color-fg-muted, #656d76)) !important;
+    }
+
+    html.gf-card-theme-github #${PANEL_ID} .gf-panel__ovr,
+    html.gf-card-theme-github #${HOVERCARD_BLOCK_ID} .gf-hc__ovr {
+      background: color-mix(
+        in srgb,
+        var(--gf-finish-accent, #656d76) 20%,
+        var(--bgColor-muted, var(--color-canvas-subtle, #f6f8fa))
+      ) !important;
+      color: var(--gf-finish-accent, var(--fgColor-default, #1f2328)) !important;
+      border: 1px solid color-mix(
+        in srgb,
+        var(--gf-finish-accent, #656d76) 70%,
+        var(--borderColor-default, var(--color-border-default, #d0d7de))
+      ) !important;
+      border-radius: 6px !important;
+      box-shadow: none !important;
+      min-width: 48px;
+      padding: 6px 8px;
+    }
+
+    html.gf-card-theme-github #${PANEL_ID} .gf-panel__ovr-value,
+    html.gf-card-theme-github #${HOVERCARD_BLOCK_ID} .gf-hc__ovr-value {
+      text-shadow: none !important;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--gf-finish-accent, var(--fgColor-default, #1f2328)) !important;
+    }
+
+    html.gf-card-theme-github #${PANEL_ID} .gf-panel__ovr-label,
+    html.gf-card-theme-github #${HOVERCARD_BLOCK_ID} .gf-hc__ovr-label {
+      opacity: 0.9;
+      color: var(--gf-finish-accent, var(--fgColor-muted, #656d76)) !important;
+      font-weight: 600;
+    }
+
+    html.gf-card-theme-github #${PANEL_ID} .gf-chip,
+    html.gf-card-theme-github #${HOVERCARD_BLOCK_ID} .gf-chip,
+    html.gf-card-theme-github .gf-playstyle.is-plus {
+      box-shadow: none !important;
+      border-radius: 2em !important;
+      border-color: var(--borderColor-default, var(--color-border-default, #d0d7de)) !important;
+      background: var(--bgColor-muted, var(--color-canvas-subtle, #f6f8fa)) !important;
+      color: var(--fgColor-default, var(--color-fg-default, #1f2328)) !important;
+    }
+
+    html.gf-card-theme-github #${PANEL_ID} .gf-chip--finish,
+    html.gf-card-theme-github #${HOVERCARD_BLOCK_ID} .gf-chip--finish {
+      border-color: color-mix(
+        in srgb,
+        var(--gf-finish-accent, #656d76) 28%,
+        var(--borderColor-default, #d0d7de)
+      ) !important;
+      background: color-mix(
+        in srgb,
+        var(--gf-finish-accent, #656d76) 8%,
+        var(--bgColor-muted, #f6f8fa)
+      ) !important;
+    }
+
+    html.gf-card-theme-github #${PANEL_ID} .gf-stat,
+    html.gf-card-theme-github #${HOVERCARD_BLOCK_ID} .gf-hc__stat {
+      box-shadow: none !important;
+      border-color: var(--borderColor-muted, var(--color-border-muted, rgba(27,31,36,0.15))) !important;
+      background: var(--bgColor-muted, var(--color-canvas-subtle, #f6f8fa)) !important;
+      border-radius: 6px !important;
+    }
+
+    html.gf-card-theme-github #${PANEL_ID} .gf-attrs {
+      box-shadow: none !important;
+      border-color: var(--borderColor-muted, var(--color-border-muted, rgba(27,31,36,0.15))) !important;
+      background: var(--bgColor-muted, var(--color-canvas-subtle, #f6f8fa)) !important;
+      border-radius: 6px !important;
+    }
+
+    html.gf-card-theme-github #${HOVERCARD_BLOCK_ID} {
+      border-top-color: var(--borderColor-muted, var(--color-border-muted, rgba(27,31,36,0.15))) !important;
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+
+    html.gf-card-theme-github #${PANEL_ID} .gf-btn-link,
+    html.gf-card-theme-github #${HOVERCARD_BLOCK_ID} .gf-hc__link {
+      border-color: var(--borderColor-default, var(--color-border-default, #d0d7de)) !important;
+      background: var(--button-default-bgColor-rest, var(--color-btn-bg, #f6f8fa)) !important;
+      color: var(--fgColor-default, var(--color-fg-default, #1f2328)) !important;
+      border-radius: 6px !important;
+      box-shadow: none !important;
+      filter: none !important;
+    }
+
+    html.gf-card-theme-github #${PANEL_ID} .gf-btn-link:hover,
+    html.gf-card-theme-github #${HOVERCARD_BLOCK_ID} .gf-hc__link:hover {
+      background: var(--button-default-bgColor-hover, var(--color-btn-hover-bg, #f3f4f6)) !important;
+      border-color: var(--button-default-borderColor-hover, var(--color-btn-hover-border, #d0d7de)) !important;
+      filter: none !important;
+    }
+
+    html.gf-card-theme-github #${PANEL_ID} .gf-btn-link--primary,
+    html.gf-card-theme-github #${HOVERCARD_BLOCK_ID} .gf-hc__link--primary {
+      border-color: var(--button-primary-borderColor-rest, rgba(31, 35, 40, 0.15)) !important;
+      background: var(--button-primary-bgColor-rest, var(--color-btn-primary-bg, #1f883d)) !important;
+      color: var(--button-primary-fgColor-rest, var(--color-btn-primary-text, #fff)) !important;
+      box-shadow: none !important;
+      filter: none !important;
+    }
+
+    html.gf-card-theme-github #${PANEL_ID} .gf-btn-link--primary:hover,
+    html.gf-card-theme-github #${HOVERCARD_BLOCK_ID} .gf-hc__link--primary:hover {
+      background: var(--button-primary-bgColor-hover, var(--color-btn-primary-hover-bg, #1a7f37)) !important;
+      border-color: var(--button-primary-borderColor-hover, rgba(31, 35, 40, 0.15)) !important;
+      filter: none !important;
+    }
+
+    html.gf-card-theme-github #${PANEL_ID} .gf-playstyle,
+    html.gf-card-theme-github #${HOVERCARD_BLOCK_ID} .gf-playstyle {
+      border-color: var(--borderColor-muted, rgba(27,31,36,0.15)) !important;
+      background: var(--bgColor-muted, #f6f8fa) !important;
+      color: var(--fgColor-default, #1f2328) !important;
+      box-shadow: none !important;
+    }
+
     #gf-user-menu-item .gf-nav-dot {
       width: 7px;
       height: 7px;
@@ -2847,7 +3026,7 @@
             <div class="gf-panel__title-row">
               <span class="gf-panel__name">${escapeHtml(card.name || card.login)}</span>
               <span class="gf-chip">${escapeHtml(card.position || '—')}</span>
-              <span class="gf-chip">${escapeHtml(finishLabel)}</span>
+              <span class="gf-chip gf-chip--finish">${escapeHtml(finishLabel)}</span>
             </div>
             <p class="gf-panel__blurb">${escapeHtml(card.archetype || '')}${card.archetypeBlurb ? ` — ${escapeHtml(card.archetypeBlurb)}` : ''}</p>
           </div>
@@ -3092,7 +3271,7 @@
         <div class="gf-hc__meta">
           <div class="gf-hc__chips">
             <span class="gf-chip">${escapeHtml(card.position || '—')}</span>
-            <span class="gf-chip">${escapeHtml(finishLabel)}</span>
+            <span class="gf-chip gf-chip--finish">${escapeHtml(finishLabel)}</span>
             ${card.topLanguage ? `<span class="gf-chip">${escapeHtml(card.topLanguage)}</span>` : ''}
           </div>
           <p class="gf-hc__blurb">${escapeHtml(card.archetype || '')}${
@@ -3479,6 +3658,7 @@
           <span class="gf-field__label">${escapeHtml(t('cardTheme'))}</span>
           <select id="gf-card-theme">
             <option value="standard">${escapeHtml(t('cardThemeStandard'))}</option>
+            <option value="github">${escapeHtml(t('cardThemeGithub'))}</option>
             <option value="fifa">${escapeHtml(t('cardThemeFifa'))}</option>
             <option value="neon">${escapeHtml(t('cardThemeNeon'))}</option>
           </select>
