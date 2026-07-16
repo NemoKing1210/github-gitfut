@@ -10,7 +10,7 @@
 // @name:ko           GitHub GitFut
 // @name:pl           GitHub GitFut
 // @namespace         https://github.com/NemoKing1210/github-gitfut
-// @version           1.4.0
+// @version           1.4.1
 // @description       Adds GitFut scouting cards on GitHub profiles and avatar hovercards
 // @description:ru    Добавляет карточки GitFut на профили GitHub и в поповеры аватаров
 // @description:zh-CN 在 GitHub 个人资料页与头像悬停卡片中显示 GitFut 球探信息
@@ -50,6 +50,11 @@
   const REPO_URL = 'https://github.com/NemoKing1210/github-gitfut';
   const CACHE_KEY = 'gf_github_cache_v1';
   const SETTINGS_KEY = 'gf_github_settings';
+  /** Soft budget for cache progress UI (GM storage itself may allow more). */
+  const CACHE_BUDGET_BYTES = 5 * 1024 * 1024;
+  /** Fallback if GM_info is unavailable — keep in sync with @version. */
+  const SCRIPT_VERSION =
+    (typeof GM_info !== 'undefined' && GM_info?.script?.version) || '1.4.1';
   const CACHE_HOURS_MAX = 168;
   const DEFAULT_SETTINGS = {
     cacheHours: 12,
@@ -186,6 +191,10 @@
       cacheCleared: 'Cache cleared ({count})',
       cacheEmpty: 'Cache is empty',
       cacheClearHint: 'Removes all stored GitFut lookups from this browser profile.',
+      version: 'Version {version}',
+      cacheCards: '{count} cards cached',
+      cacheStorage: '{used} used · {free} free',
+      cacheStorageHint: 'Local card-cache size vs a soft {budget} budget.',
       repoLink: 'GitHub',
       repoAbout: 'Source code, updates, and issue reports',
       skillMoves: 'Skill moves',
@@ -227,6 +236,10 @@
       cacheCleared: 'Кэш очищен ({count})',
       cacheEmpty: 'Кэш пуст',
       cacheClearHint: 'Удаляет все сохранённые запросы GitFut в этом профиле браузера.',
+      version: 'Версия {version}',
+      cacheCards: 'Карточек в кэше: {count}',
+      cacheStorage: '{used} занято · {free} свободно',
+      cacheStorageHint: 'Размер локального кэша карточек относительно лимита {budget}.',
       repoLink: 'GitHub',
       repoAbout: 'Исходники, обновления и баг-репорты',
       skillMoves: 'Финты',
@@ -268,6 +281,10 @@
       cacheCleared: '已清空 ({count})',
       cacheEmpty: '缓存为空',
       cacheClearHint: '删除本浏览器配置中保存的 GitFut 查询。',
+      version: '版本 {version}',
+      cacheCards: '已缓存 {count} 张',
+      cacheStorage: '已用 {used} · 剩余 {free}',
+      cacheStorageHint: '本地卡片缓存相对软上限 {budget}。',
       repoLink: 'GitHub',
       repoAbout: '源码、更新与问题反馈',
       skillMoves: '花式',
@@ -309,6 +326,10 @@
       cacheCleared: 'Caché vaciada ({count})',
       cacheEmpty: 'Caché vacía',
       cacheClearHint: 'Elimina búsquedas GitFut de este perfil.',
+      version: 'Versión {version}',
+      cacheCards: '{count} cartas en caché',
+      cacheStorage: '{used} usados · {free} libres',
+      cacheStorageHint: 'Tamaño de la caché local frente a un tope blando de {budget}.',
       repoLink: 'GitHub',
       repoAbout: 'Código, actualizaciones e issues',
       skillMoves: 'Regates',
@@ -350,6 +371,10 @@
       cacheCleared: 'Cache limpo ({count})',
       cacheEmpty: 'Cache vazio',
       cacheClearHint: 'Remove buscas GitFut deste perfil.',
+      version: 'Versão {version}',
+      cacheCards: '{count} cartas em cache',
+      cacheStorage: '{used} usados · {free} livres',
+      cacheStorageHint: 'Tamanho do cache local vs orçamento suave de {budget}.',
       repoLink: 'GitHub',
       repoAbout: 'Código, atualizações e issues',
       skillMoves: 'Habilidades',
@@ -391,6 +416,10 @@
       cacheCleared: 'Cache geleert ({count})',
       cacheEmpty: 'Cache ist leer',
       cacheClearHint: 'Löscht gespeicherte GitFut-Lookups.',
+      version: 'Version {version}',
+      cacheCards: '{count} Karten im Cache',
+      cacheStorage: '{used} belegt · {free} frei',
+      cacheStorageHint: 'Lokaler Karten-Cache gegenüber Soft-Limit {budget}.',
       repoLink: 'GitHub',
       repoAbout: 'Quellcode, Updates und Issues',
       skillMoves: 'Tricks',
@@ -432,6 +461,10 @@
       cacheCleared: 'Cache vidé ({count})',
       cacheEmpty: 'Cache vide',
       cacheClearHint: 'Supprime les recherches GitFut de ce profil.',
+      version: 'Version {version}',
+      cacheCards: '{count} cartes en cache',
+      cacheStorage: '{used} utilisés · {free} libres',
+      cacheStorageHint: 'Taille du cache local vs budget souple de {budget}.',
       repoLink: 'GitHub',
       repoAbout: 'Code, mises à jour et issues',
       skillMoves: 'Gestes',
@@ -473,6 +506,10 @@
       cacheCleared: '削除しました ({count})',
       cacheEmpty: 'キャッシュは空です',
       cacheClearHint: 'このブラウザのGitFut照会を削除します。',
+      version: 'バージョン {version}',
+      cacheCards: 'キャッシュ済み: {count} 件',
+      cacheStorage: '使用 {used} · 空き {free}',
+      cacheStorageHint: 'ローカルカードキャッシュとソフト上限 {budget}。',
       repoLink: 'GitHub',
       repoAbout: 'ソース・更新・Issue',
       skillMoves: 'スキル',
@@ -514,6 +551,10 @@
       cacheCleared: '비움 ({count})',
       cacheEmpty: '캐시가 비어 있음',
       cacheClearHint: '이 브라우저의 GitFut 조회를 삭제합니다.',
+      version: '버전 {version}',
+      cacheCards: '캐시된 카드 {count}개',
+      cacheStorage: '사용 {used} · 남음 {free}',
+      cacheStorageHint: '로컬 카드 캐시와 소프트 한도 {budget}.',
       repoLink: 'GitHub',
       repoAbout: '소스, 업데이트, 이슈',
       skillMoves: '스킬',
@@ -555,6 +596,10 @@
       cacheCleared: 'Wyczyszczono ({count})',
       cacheEmpty: 'Cache pusty',
       cacheClearHint: 'Usuwa zapisane zapytania GitFut.',
+      version: 'Wersja {version}',
+      cacheCards: 'Karty w cache: {count}',
+      cacheStorage: '{used} zajęte · {free} wolne',
+      cacheStorageHint: 'Rozmiar lokalnego cache względem limitu {budget}.',
       repoLink: 'GitHub',
       repoAbout: 'Kod, aktualizacje i zgłoszenia',
       skillMoves: 'Sztuczki',
@@ -744,6 +789,57 @@
     cacheDirty = true;
     persistCacheNow();
     return count;
+  }
+
+  function formatBytes(bytes) {
+    const n = Math.max(0, Number(bytes) || 0);
+    if (n < 1024) return `${Math.round(n)} B`;
+    if (n < 1024 * 1024) return `${(n / 1024).toFixed(n < 10 * 1024 ? 1 : 0)} KB`;
+    return `${(n / (1024 * 1024)).toFixed(2)} MB`;
+  }
+
+  function getCacheStats() {
+    const cache = loadMemoryCache();
+    const count = Object.keys(cache).length;
+    let used = 0;
+    try {
+      used = new TextEncoder().encode(JSON.stringify(cache)).length;
+    } catch {
+      used = JSON.stringify(cache).length;
+    }
+    const budget = CACHE_BUDGET_BYTES;
+    const free = Math.max(0, budget - used);
+    const usedRatio = budget > 0 ? Math.min(1, used / budget) : 0;
+    const freeRatio = budget > 0 ? Math.max(0, 1 - usedRatio) : 0;
+    return { count, used, free, budget, usedRatio, freeRatio };
+  }
+
+  function updateCacheStatsUI() {
+    const panel = document.getElementById('gf-panel');
+    if (!panel) return;
+    const stats = getCacheStats();
+    const countEl = panel.querySelector('#gf-cache-count');
+    const storageEl = panel.querySelector('#gf-cache-storage');
+    const bar = panel.querySelector('#gf-cache-bar');
+    const fill = panel.querySelector('#gf-cache-bar-fill');
+    if (countEl) countEl.textContent = t('cacheCards', { count: stats.count });
+    if (storageEl) {
+      storageEl.textContent = t('cacheStorage', {
+        used: formatBytes(stats.used),
+        free: formatBytes(stats.free),
+      });
+    }
+    if (bar && fill) {
+      const pct = Math.round(stats.freeRatio * 100);
+      fill.style.width = `${pct}%`;
+      bar.setAttribute('aria-valuenow', String(pct));
+      bar.setAttribute('aria-valuetext', t('cacheStorage', {
+        used: formatBytes(stats.used),
+        free: formatBytes(stats.free),
+      }));
+      bar.classList.toggle('is-warn', stats.usedRatio >= 0.7 && stats.usedRatio < 0.9);
+      bar.classList.toggle('is-full', stats.usedRatio >= 0.9);
+    }
   }
 
   function enqueue(task) {
@@ -1874,6 +1970,64 @@
       color: var(--fgColor-muted, var(--color-fg-muted, #656d76));
     }
 
+    .gf-settings-panel__version {
+      margin-top: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.02em;
+      color: var(--fgColor-muted, var(--color-fg-muted, #656d76));
+    }
+
+    .gf-cache-stats {
+      margin: 0 0 12px;
+      padding: 10px 11px;
+      border-radius: 8px;
+      border: 1px solid var(--borderColor-muted, rgba(27,31,36,0.08));
+      background: var(--bgColor-muted, var(--color-canvas-subtle, #f6f8fa));
+    }
+
+    .gf-cache-stats__count {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--fgColor-default, var(--color-fg-default, #1f2328));
+    }
+
+    .gf-cache-stats__storage {
+      margin: 4px 0 0;
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+      color: var(--fgColor-muted, var(--color-fg-muted, #656d76));
+    }
+
+    .gf-cache-stats__bar {
+      margin-top: 8px;
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: color-mix(in srgb, var(--fgColor-muted, #656d76) 16%, transparent);
+    }
+
+    .gf-cache-stats__bar-fill {
+      height: 100%;
+      width: 100%;
+      border-radius: inherit;
+      background: #3fb950;
+      transition: width 0.25s ease, background 0.25s ease;
+    }
+
+    .gf-cache-stats__bar.is-warn .gf-cache-stats__bar-fill {
+      background: #d29922;
+    }
+
+    .gf-cache-stats__bar.is-full .gf-cache-stats__bar-fill {
+      background: #cf222e;
+    }
+
+    .gf-cache-stats__hint {
+      margin: 6px 0 0;
+    }
+
     .gf-settings-panel__close {
       border: 0;
       background: transparent;
@@ -2585,6 +2739,7 @@
         <div>
           <div class="gf-settings-panel__title">${escapeHtml(t('panelTitle'))}</div>
           <div class="gf-settings-panel__subtitle">${escapeHtml(t('panelSubtitle'))}</div>
+          <div class="gf-settings-panel__version">${escapeHtml(t('version', { version: SCRIPT_VERSION }))}</div>
         </div>
         <button type="button" class="gf-settings-panel__close" data-gf="close" aria-label="${escapeHtml(t('close'))}">×</button>
       </div>
@@ -2605,6 +2760,22 @@
 
       <div class="gf-settings-panel__section">
         <div class="gf-settings-panel__section-title">${escapeHtml(t('sectionCache'))}</div>
+        <div class="gf-cache-stats" id="gf-cache-stats">
+          <div class="gf-cache-stats__count" id="gf-cache-count"></div>
+          <p class="gf-cache-stats__storage" id="gf-cache-storage"></p>
+          <div
+            class="gf-cache-stats__bar"
+            id="gf-cache-bar"
+            role="progressbar"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="100"
+            aria-label="${escapeHtml(t('cacheStorageHint', { budget: formatBytes(CACHE_BUDGET_BYTES) }))}"
+          >
+            <div class="gf-cache-stats__bar-fill" id="gf-cache-bar-fill"></div>
+          </div>
+          <p class="gf-hint gf-cache-stats__hint">${escapeHtml(t('cacheStorageHint', { budget: formatBytes(CACHE_BUDGET_BYTES) }))}</p>
+        </div>
         <label class="gf-field">
           <span class="gf-field__label">${escapeHtml(t('cacheHours'))}</span>
           <input type="number" id="gf-cache-hours" min="0" max="${CACHE_HOURS_MAX}" step="1" placeholder="12" inputmode="numeric" />
@@ -2647,6 +2818,7 @@
       const count = clearCardCache();
       const status = panel.querySelector('#gf-cache-status');
       if (status) status.textContent = count > 0 ? t('cacheCleared', { count }) : t('cacheEmpty');
+      updateCacheStatsUI();
     });
 
     panel.querySelector('#gf-show-hovercard').addEventListener('change', syncDisplayPills);
@@ -2681,6 +2853,7 @@
     const status = panel.querySelector('#gf-cache-status');
     if (status) status.textContent = '';
     syncDisplayPills();
+    updateCacheStatsUI();
   }
 
   function persistPanelForm() {

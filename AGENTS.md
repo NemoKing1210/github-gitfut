@@ -53,8 +53,11 @@ Keep rate limits polite: `MAX_CONCURRENT`, `REQUEST_DELAY_MS`, cache TTL; avoid 
 When shipping a user-visible change:
 
 1. Bump `@version` in **both** `github-gitfut.user.js` and `github-gitfut.meta.js`.
-2. Add a Keep a Changelog entry in `CHANGELOG.md`.
-3. Update README version badge / docs if they mention the version or new behavior.
+2. Keep the `SCRIPT_VERSION` fallback constant in `github-gitfut.user.js` identical to that `@version` (settings UI shows the version via `GM_info.script.version`, with this fallback when `GM_info` is unavailable).
+3. Add a Keep a Changelog entry in `CHANGELOG.md`.
+4. Update README version badge / docs if they mention the version or new behavior.
+
+Never ship without a version bump when the settings panel, cache UI, or other user-facing behavior changes.
 
 ## Localization
 
