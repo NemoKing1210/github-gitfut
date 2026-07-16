@@ -5,6 +5,18 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.1] - 2026-07-16
+
+### Changed
+
+- FIFA card style now uses distinct metallic finishes (Bronze, Silver, Gold, Inform, TOTY, Icon, Founder) instead of a nearly colorless flat look; still no glow / shine / pulse
+
+## [1.5.0] - 2026-07-16
+
+### Added
+
+- Card style setting: **Standard** (current finish glow / shine) or **FIFA** (restrained colors, no extra highlights)
+
 ## [1.4.1] - 2026-07-16
 
 ### Added

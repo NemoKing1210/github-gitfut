@@ -10,7 +10,7 @@
 // @name:ko           GitHub GitFut
 // @name:pl           GitHub GitFut
 // @namespace         https://github.com/NemoKing1210/github-gitfut
-// @version           1.4.1
+// @version           1.5.1
 // @description       Adds GitFut scouting cards on GitHub profiles and avatar hovercards
 // @description:ru    Добавляет карточки GitFut на профили GitHub и в поповеры аватаров
 // @description:zh-CN 在 GitHub 个人资料页与头像悬停卡片中显示 GitFut 球探信息
@@ -54,12 +54,14 @@
   const CACHE_BUDGET_BYTES = 5 * 1024 * 1024;
   /** Fallback if GM_info is unavailable — keep in sync with @version. */
   const SCRIPT_VERSION =
-    (typeof GM_info !== 'undefined' && GM_info?.script?.version) || '1.4.1';
+    (typeof GM_info !== 'undefined' && GM_info?.script?.version) || '1.5.1';
   const CACHE_HOURS_MAX = 168;
   const DEFAULT_SETTINGS = {
     cacheHours: 12,
     showHovercard: true,
+    cardTheme: 'standard',
   };
+  const CARD_THEMES = ['standard', 'fifa'];
   const MAX_CONCURRENT = 2;
   const REQUEST_DELAY_MS = 100;
   const CACHE_PERSIST_MS = 1000;
@@ -183,6 +185,10 @@
       sectionCache: 'Cache',
       showHovercard: 'Show GitFut in avatar hovercards',
       showHovercardHint: 'Injects OVR, position, and stats into GitHub’s user popover on avatar hover.',
+      cardTheme: 'Card style',
+      cardThemeHint: 'Visual finish for profile and hovercard scout panels. FIFA uses metallic Bronze / Silver / Gold / IF / TOTY / Icon colors without glow.',
+      cardThemeStandard: 'Standard',
+      cardThemeFifa: 'FIFA',
       on: 'ON',
       off: 'OFF',
       cacheHours: 'Cache duration (hours)',
@@ -228,6 +234,10 @@
       sectionCache: 'Кэш',
       showHovercard: 'GitFut в поповере аватара',
       showHovercardHint: 'Добавляет OVR, позицию и статы в нативный hovercard GitHub при наведении на аватар.',
+      cardTheme: 'Оформление карточек',
+      cardThemeHint: 'Визуальный стиль панели. FIFA — металлические бронза / серебро / золото / IF / TOTY / Icon без подсветок.',
+      cardThemeStandard: 'Стандартный вид',
+      cardThemeFifa: 'FIFA',
       on: 'ВКЛ',
       off: 'ВЫКЛ',
       cacheHours: 'Время кэша (часы)',
@@ -273,6 +283,10 @@
       sectionCache: '缓存',
       showHovercard: '在头像悬停卡片中显示 GitFut',
       showHovercardHint: '悬停头像时在 GitHub 用户弹层中注入 OVR、位置与属性。',
+      cardTheme: '卡片样式',
+      cardThemeHint: '资料页与悬停卡片球探面板的视觉风格。',
+      cardThemeStandard: '标准',
+      cardThemeFifa: 'FIFA',
       on: '开',
       off: '关',
       cacheHours: '缓存时长（小时）',
@@ -318,6 +332,10 @@
       sectionCache: 'Caché',
       showHovercard: 'Mostrar GitFut en hovercards de avatar',
       showHovercardHint: 'Inyecta OVR, posición y stats en el popover nativo de GitHub.',
+      cardTheme: 'Estilo de carta',
+      cardThemeHint: 'Acabado visual del panel en perfil y hovercard.',
+      cardThemeStandard: 'Estándar',
+      cardThemeFifa: 'FIFA',
       on: 'ON',
       off: 'OFF',
       cacheHours: 'Duración de caché (horas)',
@@ -363,6 +381,10 @@
       sectionCache: 'Cache',
       showHovercard: 'Mostrar GitFut nos hovercards de avatar',
       showHovercardHint: 'Injeta OVR, posição e stats no popover nativo do GitHub.',
+      cardTheme: 'Estilo da carta',
+      cardThemeHint: 'Visual do painel no perfil e no hovercard.',
+      cardThemeStandard: 'Padrão',
+      cardThemeFifa: 'FIFA',
       on: 'ON',
       off: 'OFF',
       cacheHours: 'Duração do cache (horas)',
@@ -408,6 +430,10 @@
       sectionCache: 'Cache',
       showHovercard: 'GitFut in Avatar-Hovercards zeigen',
       showHovercardHint: 'Fügt OVR, Position und Stats in GitHubs User-Popover ein.',
+      cardTheme: 'Kartenstil',
+      cardThemeHint: 'Optik der Scout-Panels auf Profil und Hovercard.',
+      cardThemeStandard: 'Standard',
+      cardThemeFifa: 'FIFA',
       on: 'AN',
       off: 'AUS',
       cacheHours: 'Cache-Dauer (Stunden)',
@@ -453,6 +479,10 @@
       sectionCache: 'Cache',
       showHovercard: 'Afficher GitFut dans les hovercards d’avatar',
       showHovercardHint: 'Injecte OVR, poste et stats dans le popover natif de GitHub.',
+      cardTheme: 'Style de carte',
+      cardThemeHint: 'Apparence des panneaux scout sur profil et hovercard.',
+      cardThemeStandard: 'Standard',
+      cardThemeFifa: 'FIFA',
       on: 'ON',
       off: 'OFF',
       cacheHours: 'Durée du cache (heures)',
@@ -498,6 +528,10 @@
       sectionCache: 'キャッシュ',
       showHovercard: 'アバターホバーカードにGitFutを表示',
       showHovercardHint: 'アバターホバー時にGitHubのユーザーポップオーバーへOVR等を挿入。',
+      cardTheme: 'カードスタイル',
+      cardThemeHint: 'プロフィールとホバーカードの見た目。',
+      cardThemeStandard: 'スタンダード',
+      cardThemeFifa: 'FIFA',
       on: 'ON',
       off: 'OFF',
       cacheHours: 'キャッシュ時間（時間）',
@@ -543,6 +577,10 @@
       sectionCache: '캐시',
       showHovercard: '아바타 호버카드에 GitFut 표시',
       showHovercardHint: '아바타 호버 시 GitHub 사용자 팝오버에 OVR·포지션·스탯을 넣습니다.',
+      cardTheme: '카드 스타일',
+      cardThemeHint: '프로필·호버카드 스카우트 패널의 시각 스타일.',
+      cardThemeStandard: '기본',
+      cardThemeFifa: 'FIFA',
       on: 'ON',
       off: 'OFF',
       cacheHours: '캐시 시간(시간)',
@@ -588,6 +626,10 @@
       sectionCache: 'Cache',
       showHovercard: 'Pokaż GitFut w hovercardach awatara',
       showHovercardHint: 'Wstawia OVR, pozycję i staty do natywnego popovera GitHub.',
+      cardTheme: 'Styl karty',
+      cardThemeHint: 'Wygląd paneli scout na profilu i w hovercard.',
+      cardThemeStandard: 'Standardowy',
+      cardThemeFifa: 'FIFA',
       on: 'WŁ',
       off: 'WYŁ',
       cacheHours: 'Czas cache (godziny)',
@@ -643,6 +685,17 @@
     return Math.min(n, CACHE_HOURS_MAX);
   }
 
+  function normalizeCardTheme(value) {
+    const key = String(value || '').toLowerCase();
+    return CARD_THEMES.includes(key) ? key : DEFAULT_SETTINGS.cardTheme;
+  }
+
+  function applyCardTheme() {
+    const theme = normalizeCardTheme(settings.cardTheme);
+    document.documentElement.dataset.gfCardTheme = theme;
+    document.documentElement.classList.toggle('gf-card-theme-fifa', theme === 'fifa');
+  }
+
   function loadSettings() {
     const raw = GM_getValue(SETTINGS_KEY, null);
     if (!raw || typeof raw !== 'object') return { ...DEFAULT_SETTINGS };
@@ -654,6 +707,7 @@
         typeof raw.showHovercard === 'boolean'
           ? raw.showHovercard
           : raw.showInlineBadges !== false,
+      cardTheme: normalizeCardTheme(raw.cardTheme),
     };
   }
 
@@ -666,8 +720,12 @@
         typeof next.showHovercard === 'boolean'
           ? next.showHovercard
           : settings.showHovercard !== false,
+      cardTheme: normalizeCardTheme(
+        next.cardTheme !== undefined ? next.cardTheme : settings.cardTheme
+      ),
     };
     GM_setValue(SETTINGS_KEY, settings);
+    applyCardTheme();
     updateSettingsButtonState();
   }
 
@@ -1904,6 +1962,249 @@
       }
     }
 
+    /* FIFA theme: metallic finish colors like FUT cards, no glow / shine / pulse */
+    html.gf-card-theme-fifa #${PANEL_ID},
+    html.gf-card-theme-fifa .Popover-message.gf-hc-themed {
+      --gf-panel-outer-glow: 0 0 0 transparent !important;
+      --gf-panel-ring: 0 0 0 transparent !important;
+      --gf-panel-ovr-glow: none !important;
+      --gf-hc-outer-glow: 0 0 0 transparent !important;
+      --gf-hc-ring: 0 0 0 transparent !important;
+      --gf-hc-ovr-glow: none !important;
+      --gf-hc-block-glow: none !important;
+      --gf-hc-shine-opacity: 0 !important;
+      animation: none !important;
+    }
+
+    html.gf-card-theme-fifa #${PANEL_ID} .gf-panel-theme-fx,
+    html.gf-card-theme-fifa .Popover-message.gf-hc-themed > .gf-hc-theme-fx,
+    html.gf-card-theme-fifa .gf-panel-theme-fx__shine,
+    html.gf-card-theme-fifa .gf-hc-theme-fx__shine {
+      display: none !important;
+    }
+
+    html.gf-card-theme-fifa #${PANEL_ID}.gf-panel-finish--bronze,
+    html.gf-card-theme-fifa .Popover-message.gf-hc-finish--bronze {
+      --gf-fifa-ink: #2A1810;
+      --gf-fifa-muted: #6B4A32;
+      --gf-fifa-border: #8B5A2B;
+      --gf-fifa-ovr-top: #D4A574;
+      --gf-fifa-ovr-bot: #8B5A2B;
+      --gf-fifa-ovr-ink: #1F120A;
+      --gf-fifa-stat: rgba(139, 90, 43, 0.18);
+      --gf-fifa-chip: rgba(139, 90, 43, 0.22);
+      background: linear-gradient(165deg, #E8C9A0 0%, #C9956C 42%, #A67C52 100%) !important;
+      border-color: var(--gf-fifa-border) !important;
+      color: var(--gf-fifa-ink);
+      box-shadow: inset 0 1px 0 rgba(255, 240, 220, 0.45), 0 2px 8px rgba(90, 50, 20, 0.18) !important;
+    }
+
+    html.gf-card-theme-fifa #${PANEL_ID}.gf-panel-finish--silver,
+    html.gf-card-theme-fifa .Popover-message.gf-hc-finish--silver {
+      --gf-fifa-ink: #1A1E24;
+      --gf-fifa-muted: #5A6270;
+      --gf-fifa-border: #8A93A0;
+      --gf-fifa-ovr-top: #E8ECF0;
+      --gf-fifa-ovr-bot: #8A93A0;
+      --gf-fifa-ovr-ink: #1A1E24;
+      --gf-fifa-stat: rgba(90, 98, 112, 0.16);
+      --gf-fifa-chip: rgba(90, 98, 112, 0.2);
+      background: linear-gradient(165deg, #F2F4F7 0%, #C5CBD4 45%, #9AA3B0 100%) !important;
+      border-color: var(--gf-fifa-border) !important;
+      color: var(--gf-fifa-ink);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 2px 8px rgba(40, 50, 70, 0.14) !important;
+    }
+
+    html.gf-card-theme-fifa #${PANEL_ID}.gf-panel-finish--gold,
+    html.gf-card-theme-fifa .Popover-message.gf-hc-finish--gold {
+      --gf-fifa-ink: #2A2008;
+      --gf-fifa-muted: #7A6520;
+      --gf-fifa-border: #C9A227;
+      --gf-fifa-ovr-top: #FFE28A;
+      --gf-fifa-ovr-bot: #C9A227;
+      --gf-fifa-ovr-ink: #2A2008;
+      --gf-fifa-stat: rgba(201, 162, 39, 0.22);
+      --gf-fifa-chip: rgba(201, 162, 39, 0.28);
+      background: linear-gradient(165deg, #FFE9A8 0%, #E8C547 42%, #C9A227 100%) !important;
+      border-color: var(--gf-fifa-border) !important;
+      color: var(--gf-fifa-ink);
+      box-shadow: inset 0 1px 0 rgba(255, 248, 220, 0.65), 0 2px 8px rgba(120, 90, 20, 0.16) !important;
+    }
+
+    html.gf-card-theme-fifa #${PANEL_ID}.gf-panel-finish--totw,
+    html.gf-card-theme-fifa .Popover-message.gf-hc-finish--totw {
+      --gf-fifa-ink: #F5F5F5;
+      --gf-fifa-muted: #B0B0B0;
+      --gf-fifa-border: #E03E52;
+      --gf-fifa-ovr-top: #F0D060;
+      --gf-fifa-ovr-bot: #C9A227;
+      --gf-fifa-ovr-ink: #1A1405;
+      --gf-fifa-stat: rgba(224, 62, 82, 0.22);
+      --gf-fifa-chip: rgba(224, 62, 82, 0.28);
+      background: linear-gradient(165deg, #3A3A3A 0%, #1E1E1E 50%, #121212 100%) !important;
+      border-color: var(--gf-fifa-border) !important;
+      color: var(--gf-fifa-ink);
+      box-shadow: inset 0 0 0 1px rgba(224, 62, 82, 0.35), 0 2px 10px rgba(0, 0, 0, 0.35) !important;
+    }
+
+    html.gf-card-theme-fifa #${PANEL_ID}.gf-panel-finish--toty,
+    html.gf-card-theme-fifa .Popover-message.gf-hc-finish--toty {
+      --gf-fifa-ink: #E8F0FF;
+      --gf-fifa-muted: #9BB4DE;
+      --gf-fifa-border: #3B7AFF;
+      --gf-fifa-ovr-top: #7EB0FF;
+      --gf-fifa-ovr-bot: #2A5FD4;
+      --gf-fifa-ovr-ink: #0A1630;
+      --gf-fifa-stat: rgba(59, 122, 255, 0.28);
+      --gf-fifa-chip: rgba(59, 122, 255, 0.32);
+      background: linear-gradient(165deg, #1A3A6E 0%, #0B1B3D 55%, #071228 100%) !important;
+      border-color: var(--gf-fifa-border) !important;
+      color: var(--gf-fifa-ink);
+      box-shadow: inset 0 0 0 1px rgba(59, 122, 255, 0.4), 0 2px 10px rgba(8, 20, 50, 0.4) !important;
+    }
+
+    html.gf-card-theme-fifa #${PANEL_ID}.gf-panel-finish--icon,
+    html.gf-card-theme-fifa .Popover-message.gf-hc-finish--icon {
+      --gf-fifa-ink: #F5E6C8;
+      --gf-fifa-muted: #C4B08A;
+      --gf-fifa-border: #F3D688;
+      --gf-fifa-ovr-top: #F3D688;
+      --gf-fifa-ovr-bot: #B8944A;
+      --gf-fifa-ovr-ink: #2A1A45;
+      --gf-fifa-stat: rgba(180, 120, 255, 0.22);
+      --gf-fifa-chip: rgba(243, 214, 136, 0.28);
+      background: linear-gradient(165deg, #4A2A7A 0%, #2A1A4A 50%, #1A0F30 100%) !important;
+      border-color: var(--gf-fifa-border) !important;
+      color: var(--gf-fifa-ink);
+      box-shadow: inset 0 0 0 1px rgba(243, 214, 136, 0.35), 0 2px 10px rgba(30, 15, 60, 0.4) !important;
+    }
+
+    html.gf-card-theme-fifa #${PANEL_ID}.gf-panel-finish--founder,
+    html.gf-card-theme-fifa .Popover-message.gf-hc-finish--founder {
+      --gf-fifa-ink: #FFE4EC;
+      --gf-fifa-muted: #E0A0B0;
+      --gf-fifa-border: #FF5A7A;
+      --gf-fifa-ovr-top: #FF8AA0;
+      --gf-fifa-ovr-bot: #D43055;
+      --gf-fifa-ovr-ink: #3A0A18;
+      --gf-fifa-stat: rgba(255, 90, 122, 0.28);
+      --gf-fifa-chip: rgba(255, 90, 122, 0.32);
+      background: linear-gradient(165deg, #5A2030 0%, #3A0A18 55%, #250610 100%) !important;
+      border-color: var(--gf-fifa-border) !important;
+      color: var(--gf-fifa-ink);
+      box-shadow: inset 0 0 0 1px rgba(255, 90, 122, 0.4), 0 2px 10px rgba(40, 8, 18, 0.4) !important;
+    }
+
+    html.gf-card-theme-fifa #${PANEL_ID} .gf-panel__head {
+      border-bottom-color: color-mix(in srgb, var(--gf-fifa-border, #8B5A2B) 45%, transparent) !important;
+      background: linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--gf-fifa-ovr-top, #D4A574) 22%, transparent),
+        transparent
+      ) !important;
+    }
+
+    html.gf-card-theme-fifa #${PANEL_ID} .gf-panel__name,
+    html.gf-card-theme-fifa #${PANEL_ID} .gf-stat__value,
+    html.gf-card-theme-fifa #${PANEL_ID} .gf-attrs,
+    html.gf-card-theme-fifa #${PANEL_ID} .gf-attrs__value,
+    html.gf-card-theme-fifa #${HOVERCARD_BLOCK_ID} .gf-hc__stat-value {
+      color: var(--gf-fifa-ink, inherit) !important;
+    }
+
+    html.gf-card-theme-fifa #${PANEL_ID} .gf-panel__blurb,
+    html.gf-card-theme-fifa #${PANEL_ID} .gf-stat__key,
+    html.gf-card-theme-fifa #${PANEL_ID} .gf-attrs__label,
+    html.gf-card-theme-fifa #${HOVERCARD_BLOCK_ID} .gf-hc__blurb,
+    html.gf-card-theme-fifa #${HOVERCARD_BLOCK_ID} .gf-hc__stat-key {
+      color: var(--gf-fifa-muted, inherit) !important;
+    }
+
+    html.gf-card-theme-fifa #${PANEL_ID} .gf-panel__ovr,
+    html.gf-card-theme-fifa #${HOVERCARD_BLOCK_ID} .gf-hc__ovr {
+      background: linear-gradient(180deg, var(--gf-fifa-ovr-top), var(--gf-fifa-ovr-bot)) !important;
+      color: var(--gf-fifa-ovr-ink) !important;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.35),
+        0 0 0 1px color-mix(in srgb, var(--gf-fifa-border) 55%, #000) !important;
+      text-shadow: none !important;
+    }
+
+    html.gf-card-theme-fifa #${PANEL_ID} .gf-panel__ovr-value,
+    html.gf-card-theme-fifa #${HOVERCARD_BLOCK_ID} .gf-hc__ovr-value {
+      text-shadow: none !important;
+      color: inherit !important;
+    }
+
+    html.gf-card-theme-fifa #${PANEL_ID} .gf-chip,
+    html.gf-card-theme-fifa #${HOVERCARD_BLOCK_ID} .gf-chip,
+    html.gf-card-theme-fifa .gf-playstyle.is-plus {
+      box-shadow: none !important;
+      border-color: color-mix(in srgb, var(--gf-fifa-border) 70%, transparent) !important;
+      background: var(--gf-fifa-chip) !important;
+      color: var(--gf-fifa-ink) !important;
+    }
+
+    html.gf-card-theme-fifa .gf-playstyle:not(.is-plus) {
+      border-color: color-mix(in srgb, var(--gf-fifa-border) 40%, transparent) !important;
+      background: color-mix(in srgb, var(--gf-fifa-ink) 6%, transparent) !important;
+      color: var(--gf-fifa-ink) !important;
+    }
+
+    html.gf-card-theme-fifa #${PANEL_ID} .gf-stat,
+    html.gf-card-theme-fifa #${HOVERCARD_BLOCK_ID} .gf-hc__stat {
+      box-shadow: none !important;
+      border-color: color-mix(in srgb, var(--gf-fifa-border) 40%, transparent) !important;
+      background: var(--gf-fifa-stat) !important;
+    }
+
+    html.gf-card-theme-fifa #${PANEL_ID} .gf-attrs {
+      box-shadow: none !important;
+      border-color: color-mix(in srgb, var(--gf-fifa-border) 35%, transparent) !important;
+      background: var(--gf-fifa-stat) !important;
+    }
+
+    html.gf-card-theme-fifa #${HOVERCARD_BLOCK_ID} {
+      border-top-color: color-mix(in srgb, var(--gf-fifa-border) 50%, transparent) !important;
+      background: linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--gf-fifa-ovr-top, transparent) 18%, transparent),
+        transparent 80%
+      ) !important;
+      box-shadow: none !important;
+    }
+
+    html.gf-card-theme-fifa #${PANEL_ID} .gf-btn-link {
+      border-color: color-mix(in srgb, var(--gf-fifa-border) 45%, transparent) !important;
+      background: color-mix(in srgb, var(--gf-fifa-ink) 8%, transparent) !important;
+      color: var(--gf-fifa-ink) !important;
+    }
+
+    html.gf-card-theme-fifa #${PANEL_ID} .gf-btn-link:hover {
+      background: color-mix(in srgb, var(--gf-fifa-ink) 14%, transparent) !important;
+    }
+
+    html.gf-card-theme-fifa #${HOVERCARD_BLOCK_ID} .gf-hc__link {
+      border-color: color-mix(in srgb, var(--gf-fifa-border) 45%, transparent) !important;
+      background: color-mix(in srgb, var(--gf-fifa-ink) 8%, transparent) !important;
+      color: var(--gf-fifa-ink) !important;
+    }
+
+    html.gf-card-theme-fifa #${PANEL_ID} .gf-btn-link--primary,
+    html.gf-card-theme-fifa #${HOVERCARD_BLOCK_ID} .gf-hc__link--primary {
+      border-color: transparent !important;
+      background: linear-gradient(180deg, var(--gf-fifa-ovr-top), var(--gf-fifa-ovr-bot)) !important;
+      color: var(--gf-fifa-ovr-ink) !important;
+      box-shadow: none !important;
+      filter: none !important;
+    }
+
+    html.gf-card-theme-fifa #${PANEL_ID} .gf-btn-link--primary:hover,
+    html.gf-card-theme-fifa #${HOVERCARD_BLOCK_ID} .gf-hc__link--primary:hover {
+      filter: brightness(1.05) !important;
+      background: linear-gradient(180deg, var(--gf-fifa-ovr-top), var(--gf-fifa-ovr-bot)) !important;
+    }
+
     #gf-settings-btn {
       display: inline-flex;
       align-items: center;
@@ -2720,7 +3021,8 @@
     const dot = document.getElementById('gf-settings-dot');
     const customized =
       settings.cacheHours !== DEFAULT_SETTINGS.cacheHours ||
-      settings.showHovercard !== DEFAULT_SETTINGS.showHovercard;
+      settings.showHovercard !== DEFAULT_SETTINGS.showHovercard ||
+      normalizeCardTheme(settings.cardTheme) !== DEFAULT_SETTINGS.cardTheme;
     if (dot) {
       dot.classList.toggle('is-on', customized);
       dot.title = customized ? t('on') : t('off');
@@ -2746,6 +3048,14 @@
 
       <div class="gf-settings-panel__section">
         <div class="gf-settings-panel__section-title">${escapeHtml(t('sectionDisplay'))}</div>
+        <label class="gf-field">
+          <span class="gf-field__label">${escapeHtml(t('cardTheme'))}</span>
+          <select id="gf-card-theme">
+            <option value="standard">${escapeHtml(t('cardThemeStandard'))}</option>
+            <option value="fifa">${escapeHtml(t('cardThemeFifa'))}</option>
+          </select>
+        </label>
+        <p class="gf-hint">${escapeHtml(t('cardThemeHint'))}</p>
         <div class="gf-row" style="margin-bottom:10px">
           <label class="gf-switch">
             <input type="checkbox" id="gf-show-hovercard" />
@@ -2849,6 +3159,7 @@
     const panel = document.getElementById('gf-panel');
     if (!panel) return;
     panel.querySelector('#gf-show-hovercard').checked = settings.showHovercard !== false;
+    panel.querySelector('#gf-card-theme').value = normalizeCardTheme(settings.cardTheme);
     panel.querySelector('#gf-cache-hours').value = String(normalizeCacheHours(settings.cacheHours));
     const status = panel.querySelector('#gf-cache-status');
     if (status) status.textContent = '';
@@ -2861,6 +3172,7 @@
     if (!panel) return;
     saveSettings({
       showHovercard: panel.querySelector('#gf-show-hovercard').checked,
+      cardTheme: panel.querySelector('#gf-card-theme').value,
       cacheHours: normalizeCacheHours(panel.querySelector('#gf-cache-hours').value),
     });
   }
@@ -2903,6 +3215,7 @@
 
   function init() {
     loadMemoryCache();
+    applyCardTheme();
     window.addEventListener('pagehide', persistCacheNow);
     ensureSettingsButton();
 
