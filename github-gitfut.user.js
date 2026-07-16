@@ -10,7 +10,7 @@
 // @name:ko           GitHub GitFut
 // @name:pl           GitHub GitFut
 // @namespace         https://github.com/NemoKing1210/github-gitfut
-// @version           1.5.3
+// @version           1.6.0
 // @description       Adds GitFut scouting cards on GitHub profiles and avatar hovercards
 // @description:ru    Добавляет карточки GitFut на профили GitHub и в поповеры аватаров
 // @description:zh-CN 在 GitHub 个人资料页与头像悬停卡片中显示 GitFut 球探信息
@@ -54,14 +54,14 @@
   const CACHE_BUDGET_BYTES = 5 * 1024 * 1024;
   /** Fallback if GM_info is unavailable — keep in sync with @version. */
   const SCRIPT_VERSION =
-    (typeof GM_info !== 'undefined' && GM_info?.script?.version) || '1.5.3';
+    (typeof GM_info !== 'undefined' && GM_info?.script?.version) || '1.6.0';
   const CACHE_HOURS_MAX = 168;
   const DEFAULT_SETTINGS = {
     cacheHours: 12,
     showHovercard: true,
     cardTheme: 'standard',
   };
-  const CARD_THEMES = ['standard', 'fifa'];
+  const CARD_THEMES = ['standard', 'fifa', 'neon'];
   const MAX_CONCURRENT = 2;
   const REQUEST_DELAY_MS = 100;
   const CACHE_PERSIST_MS = 1000;
@@ -186,9 +186,10 @@
       showHovercard: 'Show GitFut in avatar hovercards',
       showHovercardHint: 'Injects OVR, position, and stats into GitHub’s user popover on avatar hover.',
       cardTheme: 'Card style',
-      cardThemeHint: 'Visual finish for profile and hovercard scout panels. FIFA uses metallic Bronze / Silver / Gold / IF / TOTY / Icon colors without glow.',
+      cardThemeHint: 'Standard, FIFA (metallic finishes), or Neon (dark cards with glowing accents).',
       cardThemeStandard: 'Standard',
       cardThemeFifa: 'FIFA',
+      cardThemeNeon: 'Neon',
       on: 'ON',
       off: 'OFF',
       cacheHours: 'Cache duration (hours)',
@@ -235,9 +236,10 @@
       showHovercard: 'GitFut в поповере аватара',
       showHovercardHint: 'Добавляет OVR, позицию и статы в нативный hovercard GitHub при наведении на аватар.',
       cardTheme: 'Оформление карточек',
-      cardThemeHint: 'Визуальный стиль панели. FIFA — металлические бронза / серебро / золото / IF / TOTY / Icon без подсветок.',
+      cardThemeHint: 'Стандартный, FIFA (металл) или Неон (тёмные карточки со свечением).',
       cardThemeStandard: 'Стандартный вид',
       cardThemeFifa: 'FIFA',
+      cardThemeNeon: 'Неон',
       on: 'ВКЛ',
       off: 'ВЫКЛ',
       cacheHours: 'Время кэша (часы)',
@@ -287,6 +289,7 @@
       cardThemeHint: '资料页与悬停卡片球探面板的视觉风格。',
       cardThemeStandard: '标准',
       cardThemeFifa: 'FIFA',
+      cardThemeNeon: '霓虹',
       on: '开',
       off: '关',
       cacheHours: '缓存时长（小时）',
@@ -336,6 +339,7 @@
       cardThemeHint: 'Acabado visual del panel en perfil y hovercard.',
       cardThemeStandard: 'Estándar',
       cardThemeFifa: 'FIFA',
+      cardThemeNeon: 'Neón',
       on: 'ON',
       off: 'OFF',
       cacheHours: 'Duración de caché (horas)',
@@ -385,6 +389,7 @@
       cardThemeHint: 'Visual do painel no perfil e no hovercard.',
       cardThemeStandard: 'Padrão',
       cardThemeFifa: 'FIFA',
+      cardThemeNeon: 'Neon',
       on: 'ON',
       off: 'OFF',
       cacheHours: 'Duração do cache (horas)',
@@ -434,6 +439,7 @@
       cardThemeHint: 'Optik der Scout-Panels auf Profil und Hovercard.',
       cardThemeStandard: 'Standard',
       cardThemeFifa: 'FIFA',
+      cardThemeNeon: 'Neon',
       on: 'AN',
       off: 'AUS',
       cacheHours: 'Cache-Dauer (Stunden)',
@@ -483,6 +489,7 @@
       cardThemeHint: 'Apparence des panneaux scout sur profil et hovercard.',
       cardThemeStandard: 'Standard',
       cardThemeFifa: 'FIFA',
+      cardThemeNeon: 'Néon',
       on: 'ON',
       off: 'OFF',
       cacheHours: 'Durée du cache (heures)',
@@ -532,6 +539,7 @@
       cardThemeHint: 'プロフィールとホバーカードの見た目。',
       cardThemeStandard: 'スタンダード',
       cardThemeFifa: 'FIFA',
+      cardThemeNeon: 'ネオン',
       on: 'ON',
       off: 'OFF',
       cacheHours: 'キャッシュ時間（時間）',
@@ -581,6 +589,7 @@
       cardThemeHint: '프로필·호버카드 스카우트 패널의 시각 스타일.',
       cardThemeStandard: '기본',
       cardThemeFifa: 'FIFA',
+      cardThemeNeon: '네온',
       on: 'ON',
       off: 'OFF',
       cacheHours: '캐시 시간(시간)',
@@ -630,6 +639,7 @@
       cardThemeHint: 'Wygląd paneli scout na profilu i w hovercard.',
       cardThemeStandard: 'Standardowy',
       cardThemeFifa: 'FIFA',
+      cardThemeNeon: 'Neon',
       on: 'WŁ',
       off: 'WYŁ',
       cacheHours: 'Czas cache (godziny)',
@@ -694,6 +704,7 @@
     const theme = normalizeCardTheme(settings.cardTheme);
     document.documentElement.dataset.gfCardTheme = theme;
     document.documentElement.classList.toggle('gf-card-theme-fifa', theme === 'fifa');
+    document.documentElement.classList.toggle('gf-card-theme-neon', theme === 'neon');
   }
 
   function loadSettings() {
@@ -2235,6 +2246,244 @@
       background: linear-gradient(180deg, var(--gf-fifa-ovr-top), var(--gf-fifa-ovr-bot)) !important;
     }
 
+    /* Neon theme: dark glass + finish-colored neon glow */
+    html.gf-card-theme-neon #${PANEL_ID},
+    html.gf-card-theme-neon .Popover-message.gf-hc-themed {
+      --gf-neon: #FF9F43;
+      --gf-neon-ink: #FFE8D0;
+      --gf-neon-muted: #B89878;
+      --gf-panel-outer-glow: 0 0 0 transparent !important;
+      --gf-panel-ring: 0 0 0 transparent !important;
+      --gf-panel-ovr-glow: none !important;
+      --gf-hc-outer-glow: 0 0 0 transparent !important;
+      --gf-hc-ring: 0 0 0 transparent !important;
+      --gf-hc-ovr-glow: none !important;
+      --gf-hc-block-glow: none !important;
+      --gf-hc-shine-opacity: 0 !important;
+      animation: none !important;
+      color: var(--gf-neon-ink);
+      border-color: color-mix(in srgb, var(--gf-neon) 75%, #fff) !important;
+      background:
+        radial-gradient(120% 80% at 0% 0%, color-mix(in srgb, var(--gf-neon) 28%, transparent), transparent 55%),
+        radial-gradient(90% 70% at 100% 100%, color-mix(in srgb, var(--gf-neon) 18%, transparent), transparent 60%),
+        linear-gradient(165deg, #161622 0%, #0B0B14 100%) !important;
+      box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--gf-neon) 55%, transparent),
+        0 0 18px color-mix(in srgb, var(--gf-neon) 45%, transparent),
+        0 0 42px color-mix(in srgb, var(--gf-neon) 22%, transparent),
+        inset 0 0 28px color-mix(in srgb, var(--gf-neon) 10%, transparent) !important;
+    }
+
+    html.gf-card-theme-neon #${PANEL_ID}.gf-panel-finish--bronze,
+    html.gf-card-theme-neon .Popover-message.gf-hc-finish--bronze {
+      --gf-neon: #FF9F43;
+      --gf-neon-ink: #FFE8D0;
+      --gf-neon-muted: #C4A07A;
+    }
+
+    html.gf-card-theme-neon #${PANEL_ID}.gf-panel-finish--silver,
+    html.gf-card-theme-neon .Popover-message.gf-hc-finish--silver {
+      --gf-neon: #B8C4FF;
+      --gf-neon-ink: #EEF1FF;
+      --gf-neon-muted: #9AA3C8;
+    }
+
+    html.gf-card-theme-neon #${PANEL_ID}.gf-panel-finish--gold,
+    html.gf-card-theme-neon .Popover-message.gf-hc-finish--gold {
+      --gf-neon: #FFD60A;
+      --gf-neon-ink: #FFF6C8;
+      --gf-neon-muted: #C9B45A;
+    }
+
+    html.gf-card-theme-neon #${PANEL_ID}.gf-panel-finish--totw,
+    html.gf-card-theme-neon .Popover-message.gf-hc-finish--totw {
+      --gf-neon: #FF2E63;
+      --gf-neon-ink: #FFD6E0;
+      --gf-neon-muted: #D08098;
+    }
+
+    html.gf-card-theme-neon #${PANEL_ID}.gf-panel-finish--toty,
+    html.gf-card-theme-neon .Popover-message.gf-hc-finish--toty {
+      --gf-neon: #00F0FF;
+      --gf-neon-ink: #D7FBFF;
+      --gf-neon-muted: #74B8C4;
+    }
+
+    html.gf-card-theme-neon #${PANEL_ID}.gf-panel-finish--icon,
+    html.gf-card-theme-neon .Popover-message.gf-hc-finish--icon {
+      --gf-neon: #C77DFF;
+      --gf-neon-ink: #F3E6FF;
+      --gf-neon-muted: #B090D0;
+    }
+
+    html.gf-card-theme-neon #${PANEL_ID}.gf-panel-finish--founder,
+    html.gf-card-theme-neon .Popover-message.gf-hc-finish--founder {
+      --gf-neon: #FF6BCB;
+      --gf-neon-ink: #FFE3F4;
+      --gf-neon-muted: #D090B8;
+    }
+
+    html.gf-card-theme-neon #${PANEL_ID} .gf-panel-theme-fx,
+    html.gf-card-theme-neon .Popover-message.gf-hc-themed > .gf-hc-theme-fx {
+      display: block !important;
+    }
+
+    html.gf-card-theme-neon .gf-panel-theme-fx__shine,
+    html.gf-card-theme-neon .gf-hc-theme-fx__shine {
+      display: block !important;
+      animation: none !important;
+      background: radial-gradient(
+        60% 50% at 50% 0%,
+        color-mix(in srgb, var(--gf-neon) 35%, transparent),
+        transparent 70%
+      ) !important;
+      background-size: 100% 100% !important;
+      background-position: 0 0 !important;
+      opacity: 0.7 !important;
+    }
+
+    html.gf-card-theme-neon #${PANEL_ID}.gf-panel-finish--totw,
+    html.gf-card-theme-neon #${PANEL_ID}.gf-panel-finish--toty,
+    html.gf-card-theme-neon #${PANEL_ID}.gf-panel-finish--icon,
+    html.gf-card-theme-neon #${PANEL_ID}.gf-panel-finish--founder,
+    html.gf-card-theme-neon .Popover-message.gf-hc-finish--totw,
+    html.gf-card-theme-neon .Popover-message.gf-hc-finish--toty,
+    html.gf-card-theme-neon .Popover-message.gf-hc-finish--icon,
+    html.gf-card-theme-neon .Popover-message.gf-hc-finish--founder {
+      animation: gf-neon-pulse 2.6s ease-in-out infinite !important;
+    }
+
+    @keyframes gf-neon-pulse {
+      0%, 100% {
+        box-shadow:
+          0 0 0 1px color-mix(in srgb, var(--gf-neon) 55%, transparent),
+          0 0 16px color-mix(in srgb, var(--gf-neon) 40%, transparent),
+          0 0 36px color-mix(in srgb, var(--gf-neon) 18%, transparent),
+          inset 0 0 24px color-mix(in srgb, var(--gf-neon) 8%, transparent);
+      }
+      50% {
+        box-shadow:
+          0 0 0 1px color-mix(in srgb, var(--gf-neon) 80%, transparent),
+          0 0 26px color-mix(in srgb, var(--gf-neon) 65%, transparent),
+          0 0 56px color-mix(in srgb, var(--gf-neon) 32%, transparent),
+          inset 0 0 34px color-mix(in srgb, var(--gf-neon) 14%, transparent);
+      }
+    }
+
+    html.gf-card-theme-neon #${PANEL_ID} .gf-panel__head {
+      border-bottom-color: color-mix(in srgb, var(--gf-neon) 35%, transparent) !important;
+      background: linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--gf-neon) 16%, transparent),
+        transparent
+      ) !important;
+    }
+
+    html.gf-card-theme-neon #${PANEL_ID} .gf-panel__name,
+    html.gf-card-theme-neon #${PANEL_ID} .gf-stat__value,
+    html.gf-card-theme-neon #${PANEL_ID} .gf-attrs,
+    html.gf-card-theme-neon #${PANEL_ID} .gf-attrs__value,
+    html.gf-card-theme-neon #${HOVERCARD_BLOCK_ID} .gf-hc__stat-value {
+      color: var(--gf-neon-ink) !important;
+    }
+
+    html.gf-card-theme-neon #${PANEL_ID} .gf-panel__blurb,
+    html.gf-card-theme-neon #${PANEL_ID} .gf-stat__key,
+    html.gf-card-theme-neon #${PANEL_ID} .gf-attrs__label,
+    html.gf-card-theme-neon #${HOVERCARD_BLOCK_ID} .gf-hc__blurb,
+    html.gf-card-theme-neon #${HOVERCARD_BLOCK_ID} .gf-hc__stat-key {
+      color: var(--gf-neon-muted) !important;
+    }
+
+    html.gf-card-theme-neon #${PANEL_ID} .gf-panel__ovr,
+    html.gf-card-theme-neon #${HOVERCARD_BLOCK_ID} .gf-hc__ovr {
+      background: color-mix(in srgb, var(--gf-neon) 18%, #0A0A12) !important;
+      color: var(--gf-neon) !important;
+      box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--gf-neon) 70%, transparent),
+        0 0 14px color-mix(in srgb, var(--gf-neon) 55%, transparent),
+        inset 0 0 12px color-mix(in srgb, var(--gf-neon) 18%, transparent) !important;
+      text-shadow: 0 0 10px color-mix(in srgb, var(--gf-neon) 70%, transparent) !important;
+    }
+
+    html.gf-card-theme-neon #${PANEL_ID} .gf-panel__ovr-value,
+    html.gf-card-theme-neon #${PANEL_ID} .gf-panel__ovr-label,
+    html.gf-card-theme-neon #${HOVERCARD_BLOCK_ID} .gf-hc__ovr-value,
+    html.gf-card-theme-neon #${HOVERCARD_BLOCK_ID} .gf-hc__ovr-label {
+      color: inherit !important;
+      text-shadow: inherit !important;
+    }
+
+    html.gf-card-theme-neon #${PANEL_ID} .gf-chip,
+    html.gf-card-theme-neon #${HOVERCARD_BLOCK_ID} .gf-chip,
+    html.gf-card-theme-neon .gf-playstyle.is-plus {
+      border-color: color-mix(in srgb, var(--gf-neon) 65%, transparent) !important;
+      background: color-mix(in srgb, var(--gf-neon) 14%, transparent) !important;
+      color: var(--gf-neon-ink) !important;
+      box-shadow: 0 0 10px color-mix(in srgb, var(--gf-neon) 28%, transparent) !important;
+    }
+
+    html.gf-card-theme-neon .gf-playstyle:not(.is-plus) {
+      border-color: color-mix(in srgb, var(--gf-neon) 35%, transparent) !important;
+      background: color-mix(in srgb, var(--gf-neon) 8%, transparent) !important;
+      color: var(--gf-neon-ink) !important;
+    }
+
+    html.gf-card-theme-neon #${PANEL_ID} .gf-stat,
+    html.gf-card-theme-neon #${HOVERCARD_BLOCK_ID} .gf-hc__stat,
+    html.gf-card-theme-neon #${PANEL_ID} .gf-attrs {
+      border-color: color-mix(in srgb, var(--gf-neon) 35%, transparent) !important;
+      background: color-mix(in srgb, var(--gf-neon) 10%, #0A0A12) !important;
+      box-shadow: inset 0 0 12px color-mix(in srgb, var(--gf-neon) 8%, transparent) !important;
+    }
+
+    html.gf-card-theme-neon #${HOVERCARD_BLOCK_ID} {
+      border-top-color: color-mix(in srgb, var(--gf-neon) 40%, transparent) !important;
+      background: linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--gf-neon) 14%, transparent),
+        transparent 85%
+      ) !important;
+      box-shadow: none !important;
+    }
+
+    html.gf-card-theme-neon #${PANEL_ID} .gf-btn-link,
+    html.gf-card-theme-neon #${HOVERCARD_BLOCK_ID} .gf-hc__link {
+      border-color: color-mix(in srgb, var(--gf-neon) 45%, transparent) !important;
+      background: color-mix(in srgb, var(--gf-neon) 10%, transparent) !important;
+      color: var(--gf-neon-ink) !important;
+    }
+
+    html.gf-card-theme-neon #${PANEL_ID} .gf-btn-link:hover,
+    html.gf-card-theme-neon #${HOVERCARD_BLOCK_ID} .gf-hc__link:hover {
+      background: color-mix(in srgb, var(--gf-neon) 18%, transparent) !important;
+    }
+
+    html.gf-card-theme-neon #${PANEL_ID} .gf-btn-link--primary,
+    html.gf-card-theme-neon #${HOVERCARD_BLOCK_ID} .gf-hc__link--primary {
+      border-color: transparent !important;
+      background: color-mix(in srgb, var(--gf-neon) 22%, #0A0A12) !important;
+      color: var(--gf-neon) !important;
+      box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--gf-neon) 60%, transparent),
+        0 0 16px color-mix(in srgb, var(--gf-neon) 40%, transparent) !important;
+      text-shadow: 0 0 8px color-mix(in srgb, var(--gf-neon) 50%, transparent);
+      filter: none !important;
+    }
+
+    html.gf-card-theme-neon #${PANEL_ID} .gf-btn-link--primary:hover,
+    html.gf-card-theme-neon #${HOVERCARD_BLOCK_ID} .gf-hc__link--primary:hover {
+      filter: brightness(1.08) !important;
+      background: color-mix(in srgb, var(--gf-neon) 28%, #0A0A12) !important;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html.gf-card-theme-neon #${PANEL_ID},
+      html.gf-card-theme-neon .Popover-message.gf-hc-themed {
+        animation: none !important;
+      }
+    }
+
     #gf-settings-btn {
       display: inline-flex;
       align-items: center;
@@ -3140,6 +3389,7 @@
           <select id="gf-card-theme">
             <option value="standard">${escapeHtml(t('cardThemeStandard'))}</option>
             <option value="fifa">${escapeHtml(t('cardThemeFifa'))}</option>
+            <option value="neon">${escapeHtml(t('cardThemeNeon'))}</option>
           </select>
         </label>
         <p class="gf-hint">${escapeHtml(t('cardThemeHint'))}</p>

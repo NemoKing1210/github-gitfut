@@ -2,7 +2,7 @@
 
 [![Install userscript](https://img.shields.io/badge/Install-userscript-238636?style=for-the-badge)](https://raw.githubusercontent.com/NemoKing1210/github-gitfut/main/github-gitfut.user.js)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.5.3-green?style=for-the-badge)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.6.0-green?style=for-the-badge)](CHANGELOG.md)
 
 A userscript for GitHub that adds [GitFut](https://gitfut.com) scouting — World Cup–style player cards rated out of 99 — while you browse profiles and hover user avatars.
 
@@ -59,7 +59,7 @@ Managers compare the installed `@version` with the remote metadata to decide whe
 - **Profile scout panel** — overall (OVR), position, finish tier, PAC / SHO / PAS / DRI / DEF / PHY, attributes, and playstyles in the profile sidebar
 - **Avatar hovercard** — GitFut block inside GitHub’s native popover on avatar hover
 - **Finish-tier theming** — profile panel and popover tint, glow, and shine scale with Bronze → Icon / Founder
-- **Settings panel** — header button + manager menu: card style (Standard / FIFA), version, hovercard injection, cache stats / remaining space, cache duration, clear cache
+- **Settings panel** — header button + manager menu: card style (Standard / FIFA / Neon), version, hovercard injection, cache stats / remaining space, cache duration, clear cache
 - **Smart caching** — responses cached locally to reduce API load
 - **Soft navigation** — works with GitHub Turbo / soft-nav profile switches
 - **10 UI languages** — English, Russian, Chinese, Spanish, Portuguese, German, French, Japanese, Korean, Polish (detected from browser locale)
@@ -128,7 +128,7 @@ Open **GitFut** in the GitHub header (or the userscript manager menu) to configu
 
 | Setting | Default | Notes |
 |---------|---------|--------|
-| Card style | Standard | Standard (glow / shine) or FIFA (metallic Bronze→Icon, no glow) |
+| Card style | Standard | Standard, FIFA (metallic), or Neon (dark + glow) |
 | Show GitFut in avatar hovercards | On | Injects into GitHub’s native user popover |
 | Cache duration (hours) | 12 | Max 168 (7 days); `0` disables |
 | Clear cache | — | Immediate; does not require Save |
