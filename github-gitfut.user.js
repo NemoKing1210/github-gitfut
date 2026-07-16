@@ -10,7 +10,7 @@
 // @name:ko           GitHub GitFut
 // @name:pl           GitHub GitFut
 // @namespace         https://github.com/NemoKing1210/github-gitfut
-// @version           1.6.0
+// @version           1.7.0
 // @description       Adds GitFut scouting cards on GitHub profiles and avatar hovercards
 // @description:ru    Добавляет карточки GitFut на профили GitHub и в поповеры аватаров
 // @description:zh-CN 在 GitHub 个人资料页与头像悬停卡片中显示 GitFut 球探信息
@@ -54,7 +54,7 @@
   const CACHE_BUDGET_BYTES = 5 * 1024 * 1024;
   /** Fallback if GM_info is unavailable — keep in sync with @version. */
   const SCRIPT_VERSION =
-    (typeof GM_info !== 'undefined' && GM_info?.script?.version) || '1.6.0';
+    (typeof GM_info !== 'undefined' && GM_info?.script?.version) || '1.7.0';
   const CACHE_HOURS_MAX = 168;
   const DEFAULT_SETTINGS = {
     cacheHours: 12,
@@ -173,8 +173,7 @@
       openReport: 'Open full scout report',
       duel: 'Duel a rival',
       menuSettings: 'GitHub GitFut — Settings',
-      btnTitle: 'GitHub GitFut',
-      btnText: 'GitFut',
+      navMenuItem: 'GitFut settings',
       panelTitle: 'GitFut',
       panelSubtitle: 'Scouting · cache · display',
       close: 'Close',
@@ -223,8 +222,7 @@
       openReport: 'Открыть полный отчёт',
       duel: 'Дуэль с соперником',
       menuSettings: 'GitHub GitFut — Настройки',
-      btnTitle: 'GitHub GitFut',
-      btnText: 'GitFut',
+      navMenuItem: 'Настройки GitFut',
       panelTitle: 'GitFut',
       panelSubtitle: 'Скаутинг · кэш · отображение',
       close: 'Закрыть',
@@ -273,8 +271,7 @@
       openReport: '打开完整报告',
       duel: '对决对手',
       menuSettings: 'GitHub GitFut — 设置',
-      btnTitle: 'GitHub GitFut',
-      btnText: 'GitFut',
+      navMenuItem: 'GitFut 设置',
       panelTitle: 'GitFut',
       panelSubtitle: '球探 · 缓存 · 显示',
       close: '关闭',
@@ -323,8 +320,7 @@
       openReport: 'Abrir informe completo',
       duel: 'Duelo',
       menuSettings: 'GitHub GitFut — Ajustes',
-      btnTitle: 'GitHub GitFut',
-      btnText: 'GitFut',
+      navMenuItem: 'Ajustes de GitFut',
       panelTitle: 'GitFut',
       panelSubtitle: 'Scouting · caché · pantalla',
       close: 'Cerrar',
@@ -373,8 +369,7 @@
       openReport: 'Abrir relatório completo',
       duel: 'Duelo',
       menuSettings: 'GitHub GitFut — Configurações',
-      btnTitle: 'GitHub GitFut',
-      btnText: 'GitFut',
+      navMenuItem: 'Configurações do GitFut',
       panelTitle: 'GitFut',
       panelSubtitle: 'Scouting · cache · exibição',
       close: 'Fechar',
@@ -423,8 +418,7 @@
       openReport: 'Vollen Bericht öffnen',
       duel: 'Duell',
       menuSettings: 'GitHub GitFut — Einstellungen',
-      btnTitle: 'GitHub GitFut',
-      btnText: 'GitFut',
+      navMenuItem: 'GitFut-Einstellungen',
       panelTitle: 'GitFut',
       panelSubtitle: 'Scouting · Cache · Anzeige',
       close: 'Schließen',
@@ -473,8 +467,7 @@
       openReport: 'Ouvrir le rapport complet',
       duel: 'Duel',
       menuSettings: 'GitHub GitFut — Réglages',
-      btnTitle: 'GitHub GitFut',
-      btnText: 'GitFut',
+      navMenuItem: 'Réglages GitFut',
       panelTitle: 'GitFut',
       panelSubtitle: 'Scouting · cache · affichage',
       close: 'Fermer',
@@ -523,8 +516,7 @@
       openReport: 'フルレポートを開く',
       duel: 'デュエル',
       menuSettings: 'GitHub GitFut — 設定',
-      btnTitle: 'GitHub GitFut',
-      btnText: 'GitFut',
+      navMenuItem: 'GitFutの設定',
       panelTitle: 'GitFut',
       panelSubtitle: 'スカウト · キャッシュ · 表示',
       close: '閉じる',
@@ -573,8 +565,7 @@
       openReport: '전체 리포트 열기',
       duel: '듀얼',
       menuSettings: 'GitHub GitFut — 설정',
-      btnTitle: 'GitHub GitFut',
-      btnText: 'GitFut',
+      navMenuItem: 'GitFut 설정',
       panelTitle: 'GitFut',
       panelSubtitle: '스카우팅 · 캐시 · 표시',
       close: '닫기',
@@ -623,8 +614,7 @@
       openReport: 'Otwórz pełny raport',
       duel: 'Pojedynek',
       menuSettings: 'GitHub GitFut — Ustawienia',
-      btnTitle: 'GitHub GitFut',
-      btnText: 'GitFut',
+      navMenuItem: 'Ustawienia GitFut',
       panelTitle: 'GitFut',
       panelSubtitle: 'Scouting · cache · wyświetlanie',
       close: 'Zamknij',
@@ -737,7 +727,7 @@
     };
     GM_setValue(SETTINGS_KEY, settings);
     applyCardTheme();
-    updateSettingsButtonState();
+    updateSettingsMenuState();
   }
 
   function getCacheTtlMs() {
@@ -2484,35 +2474,16 @@
       }
     }
 
-    #gf-settings-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin-left: 8px;
-      padding: 4px 10px;
-      border-radius: 6px;
-      border: 1px solid var(--borderColor-default, var(--color-border-default, #d0d7de));
-      background: var(--bgColor-muted, var(--color-canvas-subtle, #f6f8fa));
-      color: var(--fgColor-default, var(--color-fg-default, #1f2328));
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      position: relative;
-    }
-
-    #gf-settings-btn:hover,
-    #gf-settings-btn.is-open {
-      background: var(--control-transparent-bgColor-hover, rgba(208,215,222,0.32));
-    }
-
-    #gf-settings-btn .gf-header-btn__dot {
+    #gf-user-menu-item .gf-nav-dot {
       width: 7px;
       height: 7px;
       border-radius: 50%;
       background: var(--fgColor-muted, #8b949e);
+      display: inline-block;
+      flex-shrink: 0;
     }
 
-    #gf-settings-btn .gf-header-btn__dot.is-on {
+    #gf-user-menu-item .gf-nav-dot.is-on {
       background: #3fb950;
     }
 
@@ -3316,6 +3287,7 @@
     }
 
     scanHovercards();
+    ensureUserMenuItem();
   }
 
   function scheduleScan() {
@@ -3326,43 +3298,162 @@
     }, SCAN_DEBOUNCE_MS);
   }
 
-  function ensureSettingsButton() {
-    let btn = document.getElementById('gf-settings-btn');
-    if (btn) return btn;
+  function getGlobalUserMenu() {
+    const header = document.getElementById('global-nav-user-menu-header');
+    if (header) {
+      const dialog = header.closest('[role="dialog"]');
+      if (dialog) return dialog;
+    }
+    return document.querySelector(
+      '[role="dialog"][aria-labelledby="global-nav-user-menu-header"]'
+    );
+  }
 
-    const host =
-      document.querySelector('.AppHeader-actions') ||
-      document.querySelector('header .HeaderMenu-link-row') ||
-      document.querySelector('header nav') ||
-      document.querySelector('header');
-    if (!host) return null;
+  function closeGlobalUserMenu() {
+    const menu = getGlobalUserMenu();
+    if (!menu) return;
 
-    btn = document.createElement('button');
-    btn.id = 'gf-settings-btn';
+    const closeBtn = menu.querySelector('[data-component="Dialog.CloseButton"]');
+    if (closeBtn instanceof HTMLElement && closeBtn.offsetParent !== null) {
+      closeBtn.click();
+      return;
+    }
+
+    const triggers = document.querySelectorAll('header button[aria-expanded="true"], .AppHeader button[aria-expanded="true"]');
+    for (const trigger of triggers) {
+      if (!(trigger instanceof HTMLElement)) continue;
+      trigger.click();
+      if (!getGlobalUserMenu()) return;
+    }
+
+    menu.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })
+    );
+  }
+
+  function settingsAreCustomized() {
+    return (
+      settings.cacheHours !== DEFAULT_SETTINGS.cacheHours ||
+      settings.showHovercard !== DEFAULT_SETTINGS.showHovercard ||
+      normalizeCardTheme(settings.cardTheme) !== DEFAULT_SETTINGS.cardTheme
+    );
+  }
+
+  function ensureUserMenuItem() {
+    const menu = getGlobalUserMenu();
+    if (!menu) return null;
+    if (menu.querySelector('#gf-user-menu-item')) {
+      updateSettingsMenuState();
+      return menu.querySelector('#gf-user-menu-item');
+    }
+
+    const list = menu.querySelector('ul[data-component="ActionList"]');
+    if (!list) return null;
+
+    const buttonItems = [...list.querySelectorAll('li[data-component="ActionList.Item"]')].filter(
+      (li) => li.querySelector(':scope > button')
+    );
+    // Prefer a later action button (e.g. Feature preview) over the status row.
+    const sampleLi = buttonItems[buttonItems.length - 1] || buttonItems[0];
+    if (!sampleLi) return null;
+
+    const li = /** @type {HTMLElement} */ (sampleLi.cloneNode(true));
+    li.id = 'gf-user-menu-item';
+    li.removeAttribute('hidden');
+    li.classList.remove('hide-whenRegular', 'd-md-none', 'd-lg-none');
+
+    const btn = li.querySelector('button');
+    if (!(btn instanceof HTMLButtonElement)) return null;
+    btn.removeAttribute('id');
+    btn.removeAttribute('aria-labelledby');
+    btn.removeAttribute('aria-describedby');
+    btn.removeAttribute('aria-expanded');
+    btn.removeAttribute('aria-haspopup');
     btn.type = 'button';
-    btn.title = t('btnTitle');
-    btn.innerHTML = `<span>${escapeHtml(t('btnText'))}</span><span class="gf-header-btn__dot" id="gf-settings-dot"></span>`;
+
+    const label = li.querySelector('[data-component="ActionList.Item.Label"]');
+    if (label) {
+      label.textContent = t('navMenuItem');
+      label.removeAttribute('id');
+    }
+
+    let visual = li.querySelector('[data-component="ActionList.LeadingVisual"]');
+    if (!visual) {
+      visual = document.createElement('span');
+      visual.setAttribute('data-component', 'ActionList.LeadingVisual');
+      visual.className =
+        sampleLi.querySelector('[data-component="ActionList.LeadingVisual"]')?.className ||
+        'prc-ActionList-LeadingVisual-NBr28 prc-ActionList-VisualWrap-bdCsS';
+      const spacer = btn.querySelector('[class*="Spacer"]');
+      if (spacer?.nextSibling) btn.insertBefore(visual, spacer.nextSibling);
+      else btn.insertBefore(visual, btn.firstChild);
+    }
+
+    visual.innerHTML =
+      '<svg data-component="Octicon" aria-hidden="true" focusable="false" class="octicon" viewBox="0 0 16 16" width="16" height="16" fill="currentColor" display="inline-block" overflow="visible" style="vertical-align: text-bottom">' +
+      '<path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0Zm0 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Z"/>' +
+      '<path d="M8 3.25a.75.75 0 0 1 .67.415l.9 1.8 1.99.29a.75.75 0 0 1 .416 1.279l-1.44 1.404.34 1.982a.75.75 0 0 1-1.088.791L8 10.347l-1.788.94a.75.75 0 0 1-1.088-.79l.34-1.983-1.44-1.404a.75.75 0 0 1 .416-1.28l1.99-.289.9-1.8A.75.75 0 0 1 8 3.25Z"/>' +
+      '</svg>';
+
+
+    let trailing = li.querySelector('[data-component="ActionList.TrailingVisual"]');
+    const sub = li.querySelector('[data-component="ActionList.Item--DividerContainer"]');
+    if (!trailing && sub) {
+      trailing = document.createElement('span');
+      trailing.setAttribute('data-component', 'ActionList.TrailingVisual');
+      trailing.className =
+        sampleLi.querySelector('[data-component="ActionList.TrailingVisual"]')?.className ||
+        'prc-ActionList-TrailingVisual-jwT9C prc-ActionList-VisualWrap-bdCsS';
+      sub.appendChild(trailing);
+    }
+    if (trailing) {
+      trailing.innerHTML =
+        '<span class="gf-nav-dot" id="gf-settings-dot" aria-hidden="true"></span>';
+    }
+
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
-      togglePanel();
+      closeGlobalUserMenu();
+      window.setTimeout(() => togglePanel(true), 50);
     });
-    host.appendChild(btn);
+
+    const settingsLink = [...list.querySelectorAll('a[href]')].find((a) => {
+      try {
+        return new URL(a.href, location.origin).pathname === '/settings/profile';
+      } catch {
+        return a.getAttribute('href') === '/settings/profile';
+      }
+    });
+    const settingsLi = settingsLink?.closest('li');
+    const signOutLink = [...list.querySelectorAll('a[href]')].find((a) => {
+      try {
+        return new URL(a.href, location.origin).pathname === '/logout';
+      } catch {
+        return a.getAttribute('href') === '/logout';
+      }
+    });
+    const signOutLi = signOutLink?.closest('li');
+
+    if (settingsLi) {
+      settingsLi.after(li);
+    } else if (signOutLi) {
+      signOutLi.before(li);
+    } else {
+      list.appendChild(li);
+    }
+
     ensurePanel();
-    updateSettingsButtonState();
-    return btn;
+    updateSettingsMenuState();
+    return li;
   }
 
-  function updateSettingsButtonState() {
+  function updateSettingsMenuState() {
     const dot = document.getElementById('gf-settings-dot');
-    const customized =
-      settings.cacheHours !== DEFAULT_SETTINGS.cacheHours ||
-      settings.showHovercard !== DEFAULT_SETTINGS.showHovercard ||
-      normalizeCardTheme(settings.cardTheme) !== DEFAULT_SETTINGS.cardTheme;
-    if (dot) {
-      dot.classList.toggle('is-on', customized);
-      dot.title = customized ? t('on') : t('off');
-    }
+    if (!dot) return;
+    const customized = settingsAreCustomized();
+    dot.classList.toggle('is-on', customized);
+    dot.title = customized ? t('on') : t('off');
   }
 
   function ensurePanel() {
@@ -3472,8 +3563,11 @@
 
     document.addEventListener('click', (e) => {
       if (!panelOpen) return;
-      const btn = document.getElementById('gf-settings-btn');
-      if (panel.contains(/** @type {Node} */ (e.target)) || btn?.contains(/** @type {Node} */ (e.target))) {
+      const menuItem = document.getElementById('gf-user-menu-item');
+      if (
+        panel.contains(/** @type {Node} */ (e.target)) ||
+        menuItem?.contains(/** @type {Node} */ (e.target))
+      ) {
         return;
       }
       togglePanel(false);
@@ -3517,12 +3611,10 @@
   function togglePanel(force) {
     ensurePanel();
     const panel = document.getElementById('gf-panel');
-    const btn = document.getElementById('gf-settings-btn');
     if (!panel) return;
 
     panelOpen = typeof force === 'boolean' ? force : !panelOpen;
     panel.hidden = !panelOpen;
-    btn?.classList.toggle('is-open', panelOpen);
 
     if (panelOpen) {
       fillPanelForm();
@@ -3532,33 +3624,48 @@
 
   function positionPanel() {
     const panel = document.getElementById('gf-panel');
-    const btn = document.getElementById('gf-settings-btn');
-    if (!panel || !btn) return;
+    if (!panel) return;
 
-    const rect = btn.getBoundingClientRect();
     const width = 360;
-    let left = rect.right - width;
+    const anchor =
+      document.getElementById('gf-user-menu-item') ||
+      getGlobalUserMenu() ||
+      document.querySelector('header .AppHeader-user, header [data-component="Avatar"], header img.avatar');
+
+    let left;
+    let top;
+    if (anchor) {
+      const rect = anchor.getBoundingClientRect();
+      left = rect.right - width;
+      top = rect.bottom + 8;
+      if (top < 56) top = 56;
+    } else {
+      left = window.innerWidth - width - 16;
+      top = 56;
+    }
+
     if (left < 8) left = 8;
     if (left + width > window.innerWidth - 8) left = window.innerWidth - width - 8;
+    if (top + 40 > window.innerHeight - 8) top = Math.max(8, window.innerHeight - 40);
 
-    panel.style.top = `${Math.round(rect.bottom + 8)}px`;
+    panel.style.top = `${Math.round(top)}px`;
     panel.style.left = `${Math.round(left)}px`;
   }
 
   function onSoftNavigation() {
     scheduleScan();
-    ensureSettingsButton();
+    ensureUserMenuItem();
   }
 
   function init() {
     loadMemoryCache();
     applyCardTheme();
     window.addEventListener('pagehide', persistCacheNow);
-    ensureSettingsButton();
+    ensurePanel();
+    ensureUserMenuItem();
 
     if (typeof GM_registerMenuCommand === 'function') {
       GM_registerMenuCommand(t('menuSettings'), () => {
-        ensureSettingsButton();
         togglePanel(true);
       });
     }
@@ -3575,9 +3682,20 @@
           if (
             node.id === PANEL_ID ||
             node.id === 'gf-panel' ||
-            node.id === 'gf-settings-btn' ||
+            node.id === 'gf-user-menu-item' ||
             node.id === HOVERCARD_BLOCK_ID
           ) {
+            continue;
+          }
+          if (
+            node.id === 'global-nav-user-menu-header' ||
+            node.getAttribute?.('aria-labelledby') === 'global-nav-user-menu-header' ||
+            (node.matches?.('ul[data-component="ActionList"]') && getGlobalUserMenu()?.contains(node)) ||
+            node.querySelector?.(
+              '#global-nav-user-menu-header, [aria-labelledby="global-nav-user-menu-header"]'
+            )
+          ) {
+            ensureUserMenuItem();
             continue;
           }
           if (
@@ -3585,7 +3703,7 @@
               '.js-profile-editable-area, .Layout-sidebar, .Popover.js-hovercard-content, main'
             ) ||
             node.querySelector?.(
-              '.js-profile-editable-area, .Popover.js-hovercard-content, .AppHeader-actions'
+              '.js-profile-editable-area, .Popover.js-hovercard-content'
             )
           ) {
             relevant = true;
@@ -3595,7 +3713,6 @@
         if (relevant) break;
       }
       if (!relevant) return;
-      ensureSettingsButton();
       scheduleScan();
     });
     mutationObserver.observe(document.body, { childList: true, subtree: true });
