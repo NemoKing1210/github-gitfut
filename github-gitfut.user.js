@@ -10,7 +10,7 @@
 // @name:ko           GitHub GitFut
 // @name:pl           GitHub GitFut
 // @namespace         https://github.com/NemoKing1210/github-gitfut
-// @version           1.8.0
+// @version           1.9.0
 // @description       Adds GitFut scouting cards on GitHub profiles and avatar hovercards
 // @description:ru    Добавляет карточки GitFut на профили GitHub и в поповеры аватаров
 // @description:zh-CN 在 GitHub 个人资料页与头像悬停卡片中显示 GitFut 球探信息
@@ -54,12 +54,13 @@
   const CACHE_BUDGET_BYTES = 5 * 1024 * 1024;
   /** Fallback if GM_info is unavailable — keep in sync with @version. */
   const SCRIPT_VERSION =
-    (typeof GM_info !== 'undefined' && GM_info?.script?.version) || '1.8.0';
+    (typeof GM_info !== 'undefined' && GM_info?.script?.version) || '1.9.0';
   const CACHE_HOURS_MAX = 168;
   const DEFAULT_SETTINGS = {
     cacheHours: 12,
     showHovercard: true,
     cardTheme: 'standard',
+    locale: 'auto',
   };
   const CARD_THEMES = ['standard', 'github', 'fifa', 'neon'];
   const MAX_CONCURRENT = 2;
@@ -158,6 +159,20 @@
 
   const SUPPORTED_LOCALES = ['en', 'ru', 'zh', 'es', 'pt', 'de', 'fr', 'ja', 'ko', 'pl'];
 
+  /** Native labels for the language picker (not translated per UI locale). */
+  const LOCALE_NATIVE_NAMES = {
+    en: 'English',
+    ru: 'Русский',
+    zh: '中文',
+    es: 'Español',
+    pt: 'Português',
+    de: 'Deutsch',
+    fr: 'Français',
+    ja: '日本語',
+    ko: '한국어',
+    pl: 'Polski',
+  };
+
   const TRANSLATIONS = {
     en: {
       loading: 'Scouting…',
@@ -181,6 +196,9 @@
       save: 'Save',
       saveReload: 'Save & Reload page',
       sectionDisplay: 'Display',
+      uiLanguage: 'Language',
+      uiLanguageHint: 'Language for GitFut panels, hovercards, and settings. Auto follows the browser.',
+      uiLanguageAuto: 'Auto (browser)',
       sectionCache: 'Cache',
       showHovercard: 'Show GitFut in avatar hovercards',
       showHovercardHint: 'Injects OVR, position, and stats into GitHub’s user popover on avatar hover.',
@@ -231,6 +249,9 @@
       save: 'Сохранить',
       saveReload: 'Сохранить и перезагрузить',
       sectionDisplay: 'Отображение',
+      uiLanguage: 'Язык',
+      uiLanguageHint: 'Язык панелей GitFut, hovercard и настроек. Авто — как в браузере.',
+      uiLanguageAuto: 'Авто (браузер)',
       sectionCache: 'Кэш',
       showHovercard: 'GitFut в поповере аватара',
       showHovercardHint: 'Добавляет OVR, позицию и статы в нативный hovercard GitHub при наведении на аватар.',
@@ -281,6 +302,9 @@
       save: '保存',
       saveReload: '保存并刷新',
       sectionDisplay: '显示',
+      uiLanguage: '语言',
+      uiLanguageHint: 'GitFut 面板、悬停卡片与设置的界面语言。自动跟随浏览器。',
+      uiLanguageAuto: '自动（浏览器）',
       sectionCache: '缓存',
       showHovercard: '在头像悬停卡片中显示 GitFut',
       showHovercardHint: '悬停头像时在 GitHub 用户弹层中注入 OVR、位置与属性。',
@@ -331,6 +355,9 @@
       save: 'Guardar',
       saveReload: 'Guardar y recargar',
       sectionDisplay: 'Pantalla',
+      uiLanguage: 'Idioma',
+      uiLanguageHint: 'Idioma de paneles GitFut, hovercards y ajustes. Auto sigue el navegador.',
+      uiLanguageAuto: 'Auto (navegador)',
       sectionCache: 'Caché',
       showHovercard: 'Mostrar GitFut en hovercards de avatar',
       showHovercardHint: 'Inyecta OVR, posición y stats en el popover nativo de GitHub.',
@@ -381,6 +408,9 @@
       save: 'Salvar',
       saveReload: 'Salvar e recarregar',
       sectionDisplay: 'Exibição',
+      uiLanguage: 'Idioma',
+      uiLanguageHint: 'Idioma dos painéis GitFut, hovercards e configurações. Auto segue o navegador.',
+      uiLanguageAuto: 'Auto (navegador)',
       sectionCache: 'Cache',
       showHovercard: 'Mostrar GitFut nos hovercards de avatar',
       showHovercardHint: 'Injeta OVR, posição e stats no popover nativo do GitHub.',
@@ -431,6 +461,9 @@
       save: 'Speichern',
       saveReload: 'Speichern & neu laden',
       sectionDisplay: 'Anzeige',
+      uiLanguage: 'Sprache',
+      uiLanguageHint: 'Sprache für GitFut-Panels, Hovercards und Einstellungen. Auto folgt dem Browser.',
+      uiLanguageAuto: 'Auto (Browser)',
       sectionCache: 'Cache',
       showHovercard: 'GitFut in Avatar-Hovercards zeigen',
       showHovercardHint: 'Fügt OVR, Position und Stats in GitHubs User-Popover ein.',
@@ -481,6 +514,9 @@
       save: 'Enregistrer',
       saveReload: 'Enregistrer et recharger',
       sectionDisplay: 'Affichage',
+      uiLanguage: 'Langue',
+      uiLanguageHint: 'Langue des panneaux GitFut, hovercards et réglages. Auto suit le navigateur.',
+      uiLanguageAuto: 'Auto (navigateur)',
       sectionCache: 'Cache',
       showHovercard: 'Afficher GitFut dans les hovercards d’avatar',
       showHovercardHint: 'Injecte OVR, poste et stats dans le popover natif de GitHub.',
@@ -531,6 +567,9 @@
       save: '保存',
       saveReload: '保存して再読込',
       sectionDisplay: '表示',
+      uiLanguage: '言語',
+      uiLanguageHint: 'GitFutパネル・ホバーカード・設定の表示言語。自動はブラウザに合わせます。',
+      uiLanguageAuto: '自動（ブラウザ）',
       sectionCache: 'キャッシュ',
       showHovercard: 'アバターホバーカードにGitFutを表示',
       showHovercardHint: 'アバターホバー時にGitHubのユーザーポップオーバーへOVR等を挿入。',
@@ -581,6 +620,9 @@
       save: '저장',
       saveReload: '저장 후 새로고침',
       sectionDisplay: '표시',
+      uiLanguage: '언어',
+      uiLanguageHint: 'GitFut 패널·호버카드·설정의 표시 언어. 자동은 브라우저를 따릅니다.',
+      uiLanguageAuto: '자동 (브라우저)',
       sectionCache: '캐시',
       showHovercard: '아바타 호버카드에 GitFut 표시',
       showHovercardHint: '아바타 호버 시 GitHub 사용자 팝오버에 OVR·포지션·스탯을 넣습니다.',
@@ -631,6 +673,9 @@
       save: 'Zapisz',
       saveReload: 'Zapisz i odśwież',
       sectionDisplay: 'Wyświetlanie',
+      uiLanguage: 'Język',
+      uiLanguageHint: 'Język paneli GitFut, hovercard i ustawień. Auto — według przeglądarki.',
+      uiLanguageAuto: 'Auto (przeglądarka)',
       sectionCache: 'Cache',
       showHovercard: 'Pokaż GitFut w hovercardach awatara',
       showHovercardHint: 'Wstawia OVR, pozycję i staty do natywnego popovera GitHub.',
@@ -661,7 +706,7 @@
     },
   };
 
-  function resolveLocale() {
+  function detectBrowserLocale() {
     const candidates = [navigator.language, ...(navigator.languages || [])];
     for (const candidate of candidates) {
       const raw = String(candidate).toLowerCase();
@@ -673,14 +718,28 @@
     return 'en';
   }
 
-  const LOCALE = resolveLocale();
+  function normalizeUiLocale(value) {
+    const raw = String(value ?? 'auto').toLowerCase().trim();
+    if (!raw || raw === 'auto') return 'auto';
+    const primary = raw.split('-')[0];
+    if (SUPPORTED_LOCALES.includes(primary)) return primary;
+    if (raw.startsWith('zh')) return 'zh';
+    if (raw.startsWith('pt')) return 'pt';
+    return 'auto';
+  }
+
+  function resolveActiveLocale(pref) {
+    const normalized = normalizeUiLocale(pref);
+    return normalized === 'auto' ? detectBrowserLocale() : normalized;
+  }
 
   /** @type {typeof DEFAULT_SETTINGS} */
   let settings = loadSettings();
+  let locale = resolveActiveLocale(settings.locale);
   let panelOpen = false;
 
   function t(key, vars) {
-    let text = TRANSLATIONS[LOCALE]?.[key] ?? TRANSLATIONS.en[key] ?? key;
+    let text = TRANSLATIONS[locale]?.[key] ?? TRANSLATIONS.en[key] ?? key;
     if (vars && typeof vars === 'object') {
       for (const [name, value] of Object.entries(vars)) {
         text = text.replace(new RegExp(`\\{${name}\\}`, 'g'), String(value));
@@ -720,6 +779,7 @@
           ? raw.showHovercard
           : raw.showInlineBadges !== false,
       cardTheme: normalizeCardTheme(raw.cardTheme),
+      locale: normalizeUiLocale(raw.locale),
     };
   }
 
@@ -735,8 +795,12 @@
       cardTheme: normalizeCardTheme(
         next.cardTheme !== undefined ? next.cardTheme : settings.cardTheme
       ),
+      locale: normalizeUiLocale(
+        next.locale !== undefined ? next.locale : settings.locale
+      ),
     };
     GM_setValue(SETTINGS_KEY, settings);
+    locale = resolveActiveLocale(settings.locale);
     applyCardTheme();
     updateSettingsMenuState();
   }
@@ -3514,7 +3578,8 @@
     return (
       settings.cacheHours !== DEFAULT_SETTINGS.cacheHours ||
       settings.showHovercard !== DEFAULT_SETTINGS.showHovercard ||
-      normalizeCardTheme(settings.cardTheme) !== DEFAULT_SETTINGS.cardTheme
+      normalizeCardTheme(settings.cardTheme) !== DEFAULT_SETTINGS.cardTheme ||
+      normalizeUiLocale(settings.locale) !== DEFAULT_SETTINGS.locale
     );
   }
 
@@ -3655,6 +3720,17 @@
       <div class="gf-settings-panel__section">
         <div class="gf-settings-panel__section-title">${escapeHtml(t('sectionDisplay'))}</div>
         <label class="gf-field">
+          <span class="gf-field__label">${escapeHtml(t('uiLanguage'))}</span>
+          <select id="gf-ui-locale">
+            <option value="auto">${escapeHtml(t('uiLanguageAuto'))}</option>
+            ${SUPPORTED_LOCALES.map(
+              (code) =>
+                `<option value="${code}">${escapeHtml(LOCALE_NATIVE_NAMES[code] || code)}</option>`
+            ).join('')}
+          </select>
+        </label>
+        <p class="gf-hint">${escapeHtml(t('uiLanguageHint'))}</p>
+        <label class="gf-field">
           <span class="gf-field__label">${escapeHtml(t('cardTheme'))}</span>
           <select id="gf-card-theme">
             <option value="standard">${escapeHtml(t('cardThemeStandard'))}</option>
@@ -3724,7 +3800,11 @@
       el.addEventListener('click', () => togglePanel(false))
     );
     panel.querySelector('[data-gf="save"]').addEventListener('click', () => {
-      persistPanelForm();
+      const localeChanged = persistPanelForm();
+      if (localeChanged) {
+        location.reload();
+        return;
+      }
       togglePanel(false);
     });
     panel.querySelector('[data-gf="save-run"]').addEventListener('click', () => {
@@ -3769,6 +3849,7 @@
   function fillPanelForm() {
     const panel = document.getElementById('gf-panel');
     if (!panel) return;
+    panel.querySelector('#gf-ui-locale').value = normalizeUiLocale(settings.locale);
     panel.querySelector('#gf-show-hovercard').checked = settings.showHovercard !== false;
     panel.querySelector('#gf-card-theme').value = normalizeCardTheme(settings.cardTheme);
     panel.querySelector('#gf-cache-hours').value = String(normalizeCacheHours(settings.cacheHours));
@@ -3778,14 +3859,18 @@
     updateCacheStatsUI();
   }
 
+  /** @returns {boolean} true if UI locale preference changed (caller should reload) */
   function persistPanelForm() {
     const panel = document.getElementById('gf-panel');
-    if (!panel) return;
+    if (!panel) return false;
+    const prevLocale = normalizeUiLocale(settings.locale);
     saveSettings({
+      locale: panel.querySelector('#gf-ui-locale').value,
       showHovercard: panel.querySelector('#gf-show-hovercard').checked,
       cardTheme: panel.querySelector('#gf-card-theme').value,
       cacheHours: normalizeCacheHours(panel.querySelector('#gf-cache-hours').value),
     });
+    return normalizeUiLocale(settings.locale) !== prevLocale;
   }
 
   function togglePanel(force) {
