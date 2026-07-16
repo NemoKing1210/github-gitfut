@@ -10,7 +10,7 @@
 // @name:ko           GitHub GitFut
 // @name:pl           GitHub GitFut
 // @namespace         https://github.com/NemoKing1210/github-gitfut
-// @version           1.5.1
+// @version           1.5.2
 // @description       Adds GitFut scouting cards on GitHub profiles and avatar hovercards
 // @description:ru    Добавляет карточки GitFut на профили GitHub и в поповеры аватаров
 // @description:zh-CN 在 GitHub 个人资料页与头像悬停卡片中显示 GitFut 球探信息
@@ -54,7 +54,7 @@
   const CACHE_BUDGET_BYTES = 5 * 1024 * 1024;
   /** Fallback if GM_info is unavailable — keep in sync with @version. */
   const SCRIPT_VERSION =
-    (typeof GM_info !== 'undefined' && GM_info?.script?.version) || '1.5.1';
+    (typeof GM_info !== 'undefined' && GM_info?.script?.version) || '1.5.2';
   const CACHE_HOURS_MAX = 168;
   const DEFAULT_SETTINGS = {
     cacheHours: 12,
@@ -768,6 +768,25 @@
     if (name.length < 1 || name.length > 39) return false;
     if (RESERVED_PATHS.has(name.toLowerCase())) return false;
     return /^[A-Za-z0-9](?:[A-Za-z0-9]|-(?=[A-Za-z0-9])){0,38}$/.test(name);
+  }
+
+  function getLoggedInUsername() {
+    const meta = document.querySelector('meta[name="user-login"]');
+    const login = meta?.getAttribute('content')?.trim();
+    return login && isValidUsername(login) ? login : null;
+  }
+
+  /** @param {string} opponentLogin */
+  function buildDuelUrl(opponentLogin) {
+    const opponent = String(opponentLogin || '').trim();
+    if (!opponent || !isValidUsername(opponent)) {
+      return `${SITE_BASE}`;
+    }
+    const me = getLoggedInUsername();
+    if (me && me.toLowerCase() !== opponent.toLowerCase()) {
+      return `${SITE_BASE}/${encodeURIComponent(me)}/vs/${encodeURIComponent(opponent)}`;
+    }
+    return `${SITE_BASE}/${encodeURIComponent(opponent)}/vs`;
   }
 
   function getProfileUsername() {
@@ -2564,7 +2583,7 @@
     const playstyles = Array.isArray(report.playstyles) ? report.playstyles : [];
     const finishLabel = card.finishLabel || String(card.finish || '').toUpperCase();
     const cardUrl = `${SITE_BASE}/${encodeURIComponent(card.login)}`;
-    const duelUrl = `${SITE_BASE}/${encodeURIComponent(card.login)}/vs`;
+    const duelUrl = buildDuelUrl(card.login);
     const statsHtml = STAT_ORDER.map(
       ([key, label]) => `
         <div class="gf-stat">
@@ -2767,7 +2786,7 @@
 
     const finishLabel = card.finishLabel || finish.toUpperCase();
     const cardUrl = `${SITE_BASE}/${encodeURIComponent(card.login)}`;
-    const duelUrl = `${SITE_BASE}/${encodeURIComponent(card.login)}/vs`;
+    const duelUrl = buildDuelUrl(card.login);
     const statsHtml = STAT_ORDER.map(
       ([key, label]) => `
         <div class="gf-hc__stat">
