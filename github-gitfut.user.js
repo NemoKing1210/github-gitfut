@@ -10,7 +10,7 @@
 // @name:ko           GitHub GitFut
 // @name:pl           GitHub GitFut
 // @namespace         https://github.com/NemoKing1210/github-gitfut
-// @version           1.5.2
+// @version           1.5.3
 // @description       Adds GitFut scouting cards on GitHub profiles and avatar hovercards
 // @description:ru    Добавляет карточки GitFut на профили GitHub и в поповеры аватаров
 // @description:zh-CN 在 GitHub 个人资料页与头像悬停卡片中显示 GitFut 球探信息
@@ -54,7 +54,7 @@
   const CACHE_BUDGET_BYTES = 5 * 1024 * 1024;
   /** Fallback if GM_info is unavailable — keep in sync with @version. */
   const SCRIPT_VERSION =
-    (typeof GM_info !== 'undefined' && GM_info?.script?.version) || '1.5.2';
+    (typeof GM_info !== 'undefined' && GM_info?.script?.version) || '1.5.3';
   const CACHE_HOURS_MAX = 168;
   const DEFAULT_SETTINGS = {
     cacheHours: 12,
@@ -1023,6 +1023,17 @@
         var(--gf-panel-ring, 0 0 0 1px transparent),
         0 8px 24px rgba(1, 4, 9, 0.1);
       transition: box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+    }
+
+    #${PANEL_ID}.is-expanding {
+      transition:
+        height 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+        margin-bottom 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.3s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease,
+        background 0.25s ease;
+      will-change: height, opacity, margin-bottom;
     }
 
     #${PANEL_ID} > .gf-panel-theme-fx {
@@ -2704,12 +2715,69 @@
     return { parent: area, before: null };
   }
 
+  function prefersReducedMotion() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  function revealProfilePanel(node, fromHeight) {
+    if (!(node instanceof HTMLElement)) return;
+    if (prefersReducedMotion()) return;
+
+    const startH = Math.max(0, Number(fromHeight) || 0);
+    node.style.overflow = 'hidden';
+    node.style.height = 'auto';
+    const endH = Math.round(node.getBoundingClientRect().height);
+    const startMargin = startH < 1 ? 0 : 16;
+    const endMargin = 16;
+
+    if (Math.abs(endH - startH) < 2 && startMargin === endMargin) {
+      node.style.height = '';
+      node.style.overflow = '';
+      node.style.marginBottom = '';
+      node.style.opacity = '';
+      return;
+    }
+
+    node.classList.add('is-expanding');
+    node.style.height = `${startH}px`;
+    node.style.marginBottom = `${startMargin}px`;
+    if (startH < 1) node.style.opacity = '0';
+    void node.offsetHeight;
+
+    node.style.height = `${endH}px`;
+    node.style.marginBottom = `${endMargin}px`;
+    node.style.opacity = '1';
+
+    let settled = false;
+    const settle = () => {
+      if (settled) return;
+      settled = true;
+      node.classList.remove('is-expanding');
+      node.style.height = '';
+      node.style.overflow = '';
+      node.style.marginBottom = '';
+      node.style.opacity = '';
+      node.removeEventListener('transitionend', onEnd);
+    };
+    const onEnd = (event) => {
+      if (event.target !== node) return;
+      if (event.propertyName !== 'height' && event.propertyName !== 'margin-bottom') return;
+      settle();
+    };
+    node.addEventListener('transitionend', onEnd);
+    window.setTimeout(settle, 550);
+  }
+
   function mountProfilePanel(node) {
     const existing = document.getElementById(PANEL_ID);
+    const fromHeight = existing ? existing.getBoundingClientRect().height : 0;
     if (existing) existing.remove();
     const mount = findProfileMount();
     if (!mount) return false;
     mount.parent.insertBefore(node, mount.before);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => revealProfilePanel(node, fromHeight));
+    });
     return true;
   }
 
