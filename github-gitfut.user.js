@@ -10,7 +10,7 @@
 // @name:ko           GitHub GitFut
 // @name:pl           GitHub GitFut
 // @namespace         https://github.com/NemoKing1210/github-gitfut
-// @version           1.2.0
+// @version           1.2.2
 // @description       Adds GitFut scouting cards on GitHub profiles and avatar hovercards
 // @description:ru    Добавляет карточки GitFut на профили GitHub и в поповеры аватаров
 // @description:zh-CN 在 GitHub 个人资料页与头像悬停卡片中显示 GitFut 球探信息
@@ -1080,6 +1080,7 @@
     .Popover-message.gf-hc-themed {
       position: relative;
       isolation: isolate;
+      border-radius: 16px !important;
       border-color: color-mix(
         in srgb,
         var(--gf-finish-accent, #CD7F32) 58%,
@@ -1118,22 +1119,6 @@
       z-index: 1;
     }
 
-    .gf-hc-theme-fx__bar {
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 0;
-      height: var(--gf-hc-bar, 2px);
-      background: linear-gradient(
-        90deg,
-        var(--gf-finish-deep, #5a3412),
-        var(--gf-finish-accent, #CD7F32),
-        var(--gf-finish-shine, rgba(255,198,120,0.45)),
-        var(--gf-finish-accent, #CD7F32)
-      );
-      background-size: 200% 100%;
-    }
-
     .gf-hc-theme-fx__shine {
       position: absolute;
       inset: 0;
@@ -1149,21 +1134,18 @@
     }
 
     .Popover-message.gf-hc-finish--bronze {
-      --gf-hc-bar: 2px;
       --gf-hc-shine-opacity: 0;
       --gf-hc-ring: inset 0 0 0 1px color-mix(in srgb, var(--gf-finish-accent) 28%, transparent);
       --gf-hc-outer-glow: 0 0 0 transparent;
     }
 
     .Popover-message.gf-hc-finish--silver {
-      --gf-hc-bar: 2px;
       --gf-hc-shine-opacity: 0.18;
       --gf-hc-ring: inset 0 0 0 1px color-mix(in srgb, var(--gf-finish-accent) 40%, transparent);
       --gf-hc-outer-glow: 0 0 16px color-mix(in srgb, var(--gf-finish-glow) 45%, transparent);
     }
 
     .Popover-message.gf-hc-finish--gold {
-      --gf-hc-bar: 3px;
       --gf-hc-shine-opacity: 0.32;
       --gf-hc-ring: inset 0 0 0 1px color-mix(in srgb, var(--gf-finish-accent) 55%, transparent);
       --gf-hc-outer-glow:
@@ -1172,7 +1154,6 @@
     }
 
     .Popover-message.gf-hc-finish--totw {
-      --gf-hc-bar: 3px;
       --gf-hc-shine-opacity: 0.28;
       --gf-hc-ring: inset 0 0 0 1px color-mix(in srgb, var(--gf-finish-accent) 60%, transparent);
       --gf-hc-outer-glow:
@@ -1181,7 +1162,6 @@
     }
 
     .Popover-message.gf-hc-finish--toty {
-      --gf-hc-bar: 3px;
       --gf-hc-shine-opacity: 0.38;
       --gf-hc-ring: inset 0 0 0 1px color-mix(in srgb, var(--gf-finish-accent) 65%, transparent);
       --gf-hc-outer-glow:
@@ -1191,7 +1171,6 @@
 
     .Popover-message.gf-hc-finish--icon,
     .Popover-message.gf-hc-finish--founder {
-      --gf-hc-bar: 4px;
       --gf-hc-shine-opacity: 0.45;
       --gf-hc-ring:
         inset 0 0 0 1px color-mix(in srgb, var(--gf-finish-accent) 70%, transparent),
@@ -1199,14 +1178,6 @@
       --gf-hc-outer-glow:
         0 0 32px color-mix(in srgb, var(--gf-finish-glow) 85%, transparent),
         0 0 64px color-mix(in srgb, var(--gf-finish-glow) 40%, transparent);
-    }
-
-    .Popover-message.gf-hc-finish--gold .gf-hc-theme-fx__bar,
-    .Popover-message.gf-hc-finish--totw .gf-hc-theme-fx__bar,
-    .Popover-message.gf-hc-finish--toty .gf-hc-theme-fx__bar,
-    .Popover-message.gf-hc-finish--icon .gf-hc-theme-fx__bar,
-    .Popover-message.gf-hc-finish--founder .gf-hc-theme-fx__bar {
-      animation: gf-hc-bar-shift 3.2s linear infinite;
     }
 
     .Popover-message.gf-hc-finish--gold .gf-hc-theme-fx__shine,
@@ -1227,11 +1198,6 @@
 
     .Popover-message.gf-hc-finish--founder {
       animation: gf-hc-pulse-founder 2.2s ease-in-out infinite;
-    }
-
-    @keyframes gf-hc-bar-shift {
-      0% { background-position: 0% 0; }
-      100% { background-position: 200% 0; }
     }
 
     @keyframes gf-hc-shine-sweep {
@@ -1298,7 +1264,7 @@
       padding: 12px 10px 10px;
       margin-left: -4px;
       margin-right: -4px;
-      border-radius: 10px;
+      border-radius: 14px;
       border-top: 1px solid color-mix(in srgb, var(--gf-finish-accent, #CD7F32) 35%, transparent);
       background:
         linear-gradient(
@@ -1498,11 +1464,72 @@
       color: var(--fgColor-danger, var(--color-danger-fg, #d1242f));
     }
 
+    #${HOVERCARD_BLOCK_ID} .gf-skel {
+      display: block;
+      border-radius: 6px;
+      background: linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--fgColor-muted, #656d76) 10%, transparent) 0%,
+        color-mix(in srgb, var(--fgColor-muted, #656d76) 22%, transparent) 45%,
+        color-mix(in srgb, var(--fgColor-muted, #656d76) 10%, transparent) 90%
+      );
+      background-size: 220% 100%;
+      animation: gf-skel-shimmer 1.35s ease-in-out infinite;
+    }
+
+    #${HOVERCARD_BLOCK_ID} .gf-skel--ovr {
+      flex: 0 0 auto;
+      width: 44px;
+      height: 42px;
+      border-radius: 8px;
+    }
+
+    #${HOVERCARD_BLOCK_ID} .gf-skel--chip {
+      width: 52px;
+      height: 18px;
+      border-radius: 999px;
+    }
+
+    #${HOVERCARD_BLOCK_ID} .gf-skel--blurb {
+      width: 88%;
+      height: 10px;
+      margin-top: 6px;
+    }
+
+    #${HOVERCARD_BLOCK_ID} .gf-skel--blurb-short {
+      width: 62%;
+      margin-top: 5px;
+    }
+
+    #${HOVERCARD_BLOCK_ID} .gf-skel--stat {
+      height: 36px;
+      border-radius: 6px;
+    }
+
+    #${HOVERCARD_BLOCK_ID} .gf-skel--btn {
+      width: 92px;
+      height: 24px;
+      border-radius: 6px;
+    }
+
+    #${HOVERCARD_BLOCK_ID} .gf-skel--btn-sm {
+      width: 48px;
+    }
+
+    @keyframes gf-skel-shimmer {
+      0% { background-position: 100% 0; }
+      100% { background-position: -100% 0; }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .Popover-message.gf-hc-themed,
-      .Popover-message.gf-hc-themed .gf-hc-theme-fx__bar,
       .Popover-message.gf-hc-themed .gf-hc-theme-fx__shine {
         animation: none !important;
+      }
+
+      #${HOVERCARD_BLOCK_ID} .gf-skel {
+        animation: none !important;
+        background: color-mix(in srgb, var(--fgColor-muted, #656d76) 14%, transparent);
       }
     }
 
@@ -1768,12 +1795,13 @@
 
   function ensureHovercardThemeFx(message) {
     let fx = message.querySelector(':scope > .gf-hc-theme-fx');
-    if (fx) return fx;
-    fx = document.createElement('div');
-    fx.className = 'gf-hc-theme-fx';
-    fx.setAttribute('aria-hidden', 'true');
-    fx.innerHTML = '<div class="gf-hc-theme-fx__bar"></div><div class="gf-hc-theme-fx__shine"></div>';
-    message.insertBefore(fx, message.firstChild);
+    if (!fx) {
+      fx = document.createElement('div');
+      fx.className = 'gf-hc-theme-fx';
+      fx.setAttribute('aria-hidden', 'true');
+      message.insertBefore(fx, message.firstChild);
+    }
+    fx.innerHTML = '<div class="gf-hc-theme-fx__shine"></div>';
     return fx;
   }
 
@@ -2004,11 +2032,41 @@
     if (popover) applyHovercardTheme(popover, finish);
   }
 
+  function renderHovercardSkeleton() {
+    return `
+      <div class="gf-hc__skel" role="status" aria-busy="true" aria-label="${escapeHtml(t('loading'))}">
+        <div class="gf-hc__head">
+          <div class="gf-skel gf-skel--ovr" aria-hidden="true"></div>
+          <div class="gf-hc__meta">
+            <div class="gf-hc__chips">
+              <span class="gf-skel gf-skel--chip" aria-hidden="true"></span>
+              <span class="gf-skel gf-skel--chip" aria-hidden="true"></span>
+            </div>
+            <div class="gf-skel gf-skel--blurb" aria-hidden="true"></div>
+            <div class="gf-skel gf-skel--blurb gf-skel--blurb-short" aria-hidden="true"></div>
+          </div>
+        </div>
+        <div class="gf-hc__stats">
+          <div class="gf-skel gf-skel--stat" aria-hidden="true"></div>
+          <div class="gf-skel gf-skel--stat" aria-hidden="true"></div>
+          <div class="gf-skel gf-skel--stat" aria-hidden="true"></div>
+          <div class="gf-skel gf-skel--stat" aria-hidden="true"></div>
+          <div class="gf-skel gf-skel--stat" aria-hidden="true"></div>
+          <div class="gf-skel gf-skel--stat" aria-hidden="true"></div>
+        </div>
+        <div class="gf-hc__actions">
+          <span class="gf-skel gf-skel--btn" aria-hidden="true"></span>
+          <span class="gf-skel gf-skel--btn gf-skel--btn-sm" aria-hidden="true"></span>
+        </div>
+      </div>
+    `;
+  }
+
   async function hydrateHovercardBlock(block, login) {
     const seq = ++hovercardSeq;
     block.dataset.gfLogin = login.toLowerCase();
     block.dataset.gfState = 'loading';
-    block.innerHTML = `<div class="gf-hc__status">${escapeHtml(t('loading'))}</div>`;
+    block.innerHTML = renderHovercardSkeleton();
 
     try {
       const card = await fetchCard(login);
